@@ -1,0 +1,15 @@
+[Unit]
+Description=SSH Key Agent
+# Stops the agent when the user session ends
+PartOf=default.target
+
+[Service]
+Type=simple
+# Standard path for the SSH auth socket
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+# The -D flag ensures ssh-agent runs in the foreground
+ExecStart=/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
