@@ -2,60 +2,78 @@
 
 # --- Configuration ---
 DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-PACKAGES=("hypr" "systemd" "kitty")
-FONTS=("noto-fonts-emoji" "ttf-jetbrains-mono-nerd")
+PACKAGES=("hypr" "systemd" "kitty" "waybar" "wlogout")
+ALL_SOFTWARE=(
+    "noto-fonts-emoji" 
+    "ttf-jetbrains-mono-nerd" 
+    "wlogout" 
+    "fastfetch"
+    "stow"
+    "git"
+    "base-devel" # Required for compiling AUR packages
+)
 SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service")
 TARGET_DIR="$HOME"
 
 echo "🚀 Starting dotfiles installation..."
-echo "📍 Source directory: $DOTFILES_DIR"
-echo "🏠 Target directory: $TARGET_DIR"
 
-# --- Step 1: Font Installation ---
-echo "--- Step 1: Checking fonts ---"
-for font in "${FONTS[@]}"; do
-    if pacman -Qi "$font" &> /dev/null; then
-        echo "✅ $font is already installed."
-    else
-        echo "📥 Installing $font..."
-        sudo pacman -S --noconfirm "$font"
-    fi
-done
+# --- Step 0: AUR Helper Installation (yay) ---
+echo "--- Step 0: Ensuring AUR helper (yay) is installed ---"
+if ! command -v yay &> /dev/null; then
+    echo "📥 'yay' not found. Installing dependencies and compiling from AUR..."
+    
+    # Install base-devel and git first (required to build yay)
+    sudo pacman -S --needed --noconfirm base-devel git
+    
+    # Clone and build yay in a temporary directory
+    _temp_dir=$(mktemp -d)
+    git clone https://aur.archlinux.org/yay.git "$_temp_dir"
+    cd "$_temp_dir" || exit 1
+    makepkg -si --noconfirm
+    cd "$DOTFILES_DIR" || exit 1
+    rm -rf "$_temp_dir"
+    
+    echo "✅ 'yay' installed successfully."
+else
+    echo "✅ 'yay' is already installed."
+fi
 
-# --- Step 2: Symlinks with Stow ---
-echo "--- Step 2: Linking configurations with Stow ---"
+echo "📥 Installing all required software and fonts via yay..."
+yay -S --needed --noconfirm "${ALL_SOFTWARE[@]}"
+
+# --- Step 1: Symlinks with Stow ---
+echo "--- Step 1: Linking configurations with Stow ---"
 cd "$DOTFILES_DIR" || exit 1
 
 for pkg in "${PACKAGES[@]}"; do
-    if [ -d "$pkg" ]; then
-        echo "📦 Stowing package: $pkg"
-        stow -v -R -t "$TARGET_DIR" "$pkg"
+    pkg_clean=$(echo "$pkg" | tr -d ',')
+    if [ -d "$pkg_clean" ]; then
+        echo "📦 Stowing package: $pkg_clean"
+        stow -v -R -t "$TARGET_DIR" "$pkg_clean"
         if [ $? -eq 0 ]; then
-            echo "  ✅ $pkg stowed successfully."
+            echo "  ✅ $pkg_clean stowed successfully."
         else
-            echo "  ❌ Error stowing $pkg."
+            echo "  ❌ Error stowing $pkg_clean."
         fi
     else
-        echo "  ⚠️  Warning: Package directory '$pkg' not found. Skipping."
+        echo "  ⚠️  Warning: Package directory '$pkg_clean' not found. Skipping."
     fi
 done
 
-# --- Step 3: Systemd Services ---
-echo "--- Step 3: Managing systemd user services ---"
+# --- Step 2: Systemd Services ---
+echo "--- Step 2: Managing systemd user services ---"
 echo "🔄 Reloading systemd daemon..."
 systemctl --user daemon-reload
 
 for service in "${SERVICES[@]}"; do
     echo "⚙️  Enabling and starting: $service"
-    # Enable (per l'avvio al boot) e Start (per l'avvio immediato)
     systemctl --user enable --now "$service"
     
     if [ $? -eq 0 ]; then
         echo "  ✅ $service is active."
     else
-        echo "  ❌ Failed to start $service. Check 'systemctl --user status $service'"
+        echo "  ❌ Failed to start $service."
     fi
 done
 
 echo "🎉 Installation complete!"
-echo "💡 Note: If icons don't appear, restart Kitty or log out and back in."

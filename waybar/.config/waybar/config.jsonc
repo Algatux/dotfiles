@@ -1,0 +1,90 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 40,
+    "output": [
+        "DP-1",
+        "DP-3"
+    ],
+    "modules-left": [
+        "custom/archlinux",
+        "hyprland/workspaces",
+        "hyprland/mode"
+    ],
+    "modules-center": [
+        "hyprland/window"
+    ],
+    "modules-right": [
+        "network",
+        "pulseaudio",
+        "clock",
+        "tray",
+        "custom/powerbutton"
+    ],
+    "tray-position": "right",
+    "custom/archlinux": {
+        "format": "    ",
+        "on-click": "kitty --class fastfetch-pop -e sh -c 'fastfetch; zsh'",
+        "tooltip": false
+    },
+    "hyprland/workspaces": {
+        "on-click": "activate",
+        "sort-by-number": true,
+        "persistent-workspaces": {
+            "1": [],
+            "2": []
+        }
+    },
+    "clock": {
+		"format": "{:%OI:%OM %p}",
+		"format-alt": "{:%A, %b %e}",
+		"interval": 60
+	},
+    "hyprland/window": {
+        "format": "{}",
+        "rewrite": {
+            "(.*) - Google Chrome": "  $1",
+            "(.*)@arch:(.*)": " $1:$2"
+        },
+        "separate-outputs": true
+    },
+    "network": {
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-ethernet": "{ipaddr}/{cidr} 󰈀",
+        "tooltip-format": "{ifname} via {gwaddr} 󰛳",
+        "format-linked": "{ifname} (No IP) 󰲛",
+        "format-disconnected": "Disconnected ⚠",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "",
+        "format-icons": {
+            "alsa_output.pci-0000_00_1f.3.analog-stereo": "",
+            "alsa_output.pci-0000_00_1f.3.analog-stereo-muted": "",
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "phone-muted": "",
+            "portable": "",
+            "car": "",
+            "default": [
+                "",
+                ""
+            ]
+        },
+        "scroll-step": 1,
+        "on-click": "pavucontrol",
+        "ignored-sinks": [
+            "Easy Effects Sink"
+        ]
+    },
+    "custom/powerbutton": {
+        "format": "",
+        "on-click": "wlogout",
+        "tooltip": false
+    }
+}
