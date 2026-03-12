@@ -12,7 +12,7 @@
 }
 {
     "label" : "logout",
-    "action" : "wlogout --protocol layer-shell",
+    "action" : "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit",
     "text" : "Logout",
     "keybind" : "e"
 }

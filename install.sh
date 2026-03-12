@@ -6,7 +6,8 @@ PACKAGES=("hypr" "systemd" "kitty" "waybar" "wlogout")
 ALL_SOFTWARE=(
     "noto-fonts-emoji" 
     "ttf-jetbrains-mono-nerd" 
-    "wlogout" 
+    "wlogout"
+    "hyprshutdown"
     "fastfetch"
     "stow"
     "git"
