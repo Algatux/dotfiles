@@ -7,7 +7,8 @@
     ],
     "modules-left": [
         "custom/archlinux",
-        "hyprland/workspaces"
+        "hyprland/workspaces",
+        "custom/clipboard"
     ],
     "modules-center": [
         "hyprland/window"
@@ -128,7 +129,8 @@
     "memory": {
         "interval": 30,
         "format": "<span color=\"#89b4fa\"> </span> {used} GiB",
-        "on-click": "kitty --class btop-floating -e btop"
+        "on-click": "kitty --class btop-floating -e btop",
+        "tooltip-format": "Used: {used} GiB\nFree: {avail} GiB\nTotal: {total} GiB"
     },
     "disk": {
         "interval": 30,
@@ -151,5 +153,11 @@
         "format-ok": "✓",
         "system": true,
         "user": true
+    },
+    "custom/clipboard": {
+        "format": "󰅍",
+        "on-click": "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy",
+        "on-click-right": "cliphist wipe",
+        "tooltip-format": "Sinistro: Apri storico\nDestro: Cancella tutto"
     }
 }

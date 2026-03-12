@@ -12,6 +12,8 @@ ALL_SOFTWARE=(
     "stow"
     "git"
     "base-devel" # Required for compiling AUR packages
+    "wl-clipboard"
+    "cliphist"
 )
 SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service")
 TARGET_DIR="$HOME"

@@ -20,6 +20,15 @@ window#waybar {
   color: white;
 }
 
+#custom-clipboard {
+  background-color: #1d202e;
+  color: #7dcfff;
+  padding: 0px 10px;
+  margin: 5px 0px;
+  margin-left: 5PX;
+  border-radius: 2px;
+}
+
 #workspaces {
   background-color: #1d202e;
   margin: 5px 0px;
