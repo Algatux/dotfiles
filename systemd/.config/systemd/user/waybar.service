@@ -6,7 +6,7 @@ After=graphical-session.target
 Requisite=graphical-session.target
 
 [Service]
-ExecStart=/usr/bin/waybar -s /home/alga/.config/waybar/syle.css -c /home/alga/.config/waybar/config.jsonc
+ExecStart=/usr/bin/waybar
 ExecReload=kill -SIGUSR2 $MAINPID
 Restart=always
 RestartSec=1

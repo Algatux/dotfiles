@@ -12,6 +12,8 @@ The repository is organized into subdirectories that are intended to be managed 
   - `monitors.conf` – Display and monitor settings
   - `workspaces.conf` – Workspace configuration
   - `autostart.conf` – Autostart applications on session start
+  - `hypridle.conf` – Idle management and screen timeout settings
+  - `hyprlock.conf` – Screen lock configuration
   - `wallpapers/` – Wallpaper files
   
 - `systemd/` – User systemd service and target files
@@ -19,6 +21,7 @@ The repository is organized into subdirectories that are intended to be managed 
   - `ssh-agent.service` – SSH agent service
   - `swww.service` – Wallpaper switching service (swww)
   - `waybar.service` – System tray and status bar service
+  - `hypridle.service` – Idle management service
   - `default.target.wants/` – Default session targets
   - `graphical-session.target.wants/` – Graphical session targets
   
@@ -76,12 +79,15 @@ Hyprland is a tiling window manager for Wayland. The configuration is split acro
 - **monitors.conf** – Display configuration (resolution, refresh rate, DPI scaling)
 - **workspaces.conf** – Workspace definitions and settings
 - **autostart.conf** – Applications to launch on session start (waybar, swww, cliphist, etc.)
+- **hypridle.conf** – Idle timeout settings (screen off, suspend after inactivity)
+- **hyprlock.conf** – Screen lock appearance and behavior configuration
 - **wallpapers/** – Directory containing wallpaper images for swww
 
 **Customization Tips:**
 - Edit `monitors.conf` to adjust display settings for your hardware
 - Modify `keybindings.conf` to change keyboard shortcuts
 - Update `autostart.conf` to launch additional applications
+- Configure idle timeouts and lock behavior in `hypridle.conf` and `hyprlock.conf`
 - Add wallpaper images to `wallpapers/` directory
 
 ### 💻 Kitty Terminal (`kitty/`)
@@ -143,6 +149,7 @@ User-level systemd services that run when the graphical session starts.
 - **ssh-agent.service** – SSH authentication agent for key management
 - **swww.service** – Wallpaper daemon for dynamic wallpaper support
 - **waybar.service** – System status bar service
+- **hypridle.service** – Idle management service for screen timeout and suspend
 
 **Service Targets:**
 - **default.target.wants/** – Services that should start with the default user target
@@ -173,6 +180,8 @@ The dotfiles require the following software components:
 | **kitty** | Terminal emulator |
 | **wlogout** | Lock/logout screen |
 | **hyprpolkitagent** | PolicyKit authentication agent |
+| **hypridle** | Idle management daemon |
+| **hyprlock** | Screen lock utility |
 | **swww** | Wallpaper daemon |
 | **ssh-agent** | SSH key management |
 | **wl-clipboard** | X11/Wayland clipboard sync |
