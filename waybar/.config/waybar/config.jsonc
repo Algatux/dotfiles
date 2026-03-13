@@ -5,6 +5,7 @@
     "output": [
         "DP-1"
     ],
+
     "modules-left": [
         "custom/archlinux",
         "hyprland/workspaces",
@@ -25,11 +26,15 @@
         "clock",
         "custom/powerbutton"
     ],
+
+    // --- MODULES LEFT ---
+
     "custom/archlinux": {
         "format": "    ",
         "on-click": "kitty --class fastfetch-pop -e sh -c 'fastfetch; zsh'",
         "tooltip": false
     },
+
     "hyprland/workspaces": {
         "all-outputs": true,
         "active-only": false,
@@ -42,39 +47,16 @@
             "4": []
         }
     },
-    "hyprland/language": {
-        "format": "  {}",
-        "format-en": "EN",
-        "format-en-intl": "EN-Intl",
-        "format-it": "IT",
-        "keyboard-name": "monsgeek-monsgeek-keyboard-1",
-        "on-click": "hyprctl switchxkblayout monsgeek-monsgeek-keyboard-1 next"
+
+    "custom/clipboard": {
+        "format": "󰅍",
+        "on-click": "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy",
+        "on-click-right": "cliphist wipe",
+        "tooltip-format": "Left: History\nRight: Cleanup"
     },
-    "clock": {
-        "format": "{:%H:%M} ",
-        "format-alt": "{:%A, %b %e}",
-        "interval": 60,
-        "tooltip-format": "<tt><small>{calendar}</small></tt>",
-        "calendar": {
-            "mode": "month",
-            "weeks-pos": "right",
-            "on-scroll": 1,
-            "format": {
-                "months": "<span color='#ffead3'><b>{}</b></span>",
-                "days": "<span color='#ecc6d9'><b>{}</b></span>",
-                "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
-                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-                "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
-            }
-        },
-        "actions": {
-            "on-click-right": "mode",
-            "on-scroll-up": "tz_up",
-            "on-scroll-down": "tz_down",
-            "on-scroll-up": "shift_up",
-            "on-scroll-down": "shift_down"
-        },
-    },
+
+    // --- MODULES CENTER ---
+
     "hyprland/window": {
         "format": "{}",
         "rewrite": {
@@ -84,8 +66,49 @@
         },
         "separate-outputs": false
     },
+
+    // --- MODULES RIGHT ---
+
+    "systemd-failed-units": {
+        "hide-on-ok": false,
+        "format": "✗ {nr_failed}",
+        "format-ok": "✓",
+        "system": true,
+        "user": true
+    },
+
+    "tray": {
+        "spacing": 10,
+        "show-passive-items": true,
+        "reverse-direction": true,
+        "icons": {
+            "blueman": "/home/alga/.config/waybar/icons/bluetooth-48.png",
+            "nm-applet": "/home/alga/.config/waybar/icons/network-48.png"
+        }
+    },
+
+    "cpu": {
+        "interval": 10,
+        "format": "<span color=\"#f38ba8\"></span>  {}%",
+        "max-length": 10,
+        "on-click": "kitty --class btop-floating -e btop"
+    },
+
+    "memory": {
+        "interval": 30,
+        "format": "<span color=\"#89b4fa\"> </span> {used} GiB",
+        "on-click": "kitty --class btop-floating -e btop",
+        "tooltip-format": "Used: {used} GiB\nFree: {avail} GiB\nTotal: {total} GiB"
+    },
+
+    "disk": {
+        "interval": 30,
+        "format": "<span color=\"#f9e2af\"> </span> {specific_used:0.2f} GB",
+        //"path": "/",
+        "unit": "GB"
+    },
+
     "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",
         "format-ethernet": "{ipaddr}/{cidr} 󰈀",
         "tooltip-format": "{ifname} via {gwaddr} 󰛳",
@@ -93,6 +116,7 @@
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
+
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% {icon}",
@@ -118,49 +142,43 @@
             "Easy Effects Sink"
         ]
     },
+
+    "hyprland/language": {
+        "format": "  {}",
+        "format-en": "EN",
+        "format-en-intl": "EN-Intl",
+        "format-it": "IT",
+        "keyboard-name": "monsgeek-monsgeek-keyboard-1",
+        "on-click": "hyprctl switchxkblayout monsgeek-monsgeek-keyboard-1 next"
+    },
+
+    "clock": {
+        "format": "{:%H:%M} ",
+        "format-alt": "{:%A, %b %e}",
+        "interval": 60,
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#ffead3'><b>{}</b></span>",
+                "days": "<span color='#ecc6d9'><b>{}</b></span>",
+                "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+                "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+
     "custom/powerbutton": {
         "format": "",
         "on-click": "wlogout --protocol layer-shell",
         "tooltip": false
-    },
-    "cpu": {
-        "interval": 10,
-        "format": "<span color=\"#f38ba8\"></span>  {}%",
-        "max-length": 10,
-        "on-click": "kitty --class btop-floating -e btop"
-    },
-    "memory": {
-        "interval": 30,
-        "format": "<span color=\"#89b4fa\"> </span> {used} GiB",
-        "on-click": "kitty --class btop-floating -e btop",
-        "tooltip-format": "Used: {used} GiB\nFree: {avail} GiB\nTotal: {total} GiB"
-    },
-    "disk": {
-        "interval": 30,
-        "format": "<span color=\"#f9e2af\"> </span> {specific_used:0.2f} GB",
-        //"path": "/",
-        "unit": "GB"
-    },
-    "tray": {
-        "spacing": 10,
-        "show-passive-items": true,
-        "reverse-direction": true,
-        "icons": {
-            "blueman": "/home/alga/.config/waybar/icons/bluetooth-48.png",
-            "nm-applet": "/home/alga/.config/waybar/icons/network-48.png"
-        }
-    },
-    "systemd-failed-units": {
-        "hide-on-ok": false,
-        "format": "✗ {nr_failed}",
-        "format-ok": "✓",
-        "system": true,
-        "user": true
-    },
-    "custom/clipboard": {
-        "format": "󰅍",
-        "on-click": "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy",
-        "on-click-right": "cliphist wipe",
-        "tooltip-format": "Sinistro: Apri storico\nDestro: Cancella tutto"
     }
 }
