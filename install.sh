@@ -8,14 +8,16 @@ ALL_SOFTWARE=(
     "ttf-jetbrains-mono-nerd" 
     "wlogout"
     "hyprshutdown"
+    "hyprlock"
+    "hypridle"
     "fastfetch"
     "stow"
     "git"
-    "base-devel" # Required for compiling AUR packages
+    "base-devel"
     "wl-clipboard"
     "cliphist"
 )
-SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service")
+SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service", "hypridle.service")
 TARGET_DIR="$HOME"
 
 echo "🚀 Starting dotfiles installation..."

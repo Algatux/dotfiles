@@ -1,0 +1,16 @@
+[Unit]
+Description=Hypridle - Hyprland Idle Daemon
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+# Safety check: waits until the WAYLAND_DISPLAY environment variable is set
+# This prevents the service from starting before the compositor is ready
+ExecStartPre=/usr/bin/bash -c 'until [ -n "$WAYLAND_DISPLAY" ]; do sleep 0.1; done'
+ExecStart=/usr/bin/hypridle
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
