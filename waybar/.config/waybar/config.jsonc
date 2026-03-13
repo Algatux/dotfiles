@@ -47,13 +47,12 @@
         "on-click": "hyprctl switchxkblayout monsgeek-monsgeek-keyboard-1 next"
     },
     "clock": {
-        "format": "{:%OI:%OM %p}",
+        "format": "{:%H:%M} ",
         "format-alt": "{:%A, %b %e}",
         "interval": 60,
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
-            "mode-mon-col": 3,
             "weeks-pos": "right",
             "on-scroll": 1,
             "format": {
