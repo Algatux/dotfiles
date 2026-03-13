@@ -1,73 +1,245 @@
-# dotfiles
+# 🔧 dotfiles
 
-This repository stores configuration files ("dotfiles") for a personal Linux setup. It includes custom settings for Hyprland window manager and systemd units, among other system configurations.
+This repository stores configuration files ("dotfiles") for a personal Wayland-based Linux setup. It includes custom settings for Hyprland window manager, systemd services, terminal emulator, status bar, and lock/logout utilities.
 
-## Structure
+## 📁 Structure
 
 The repository is organized into subdirectories that are intended to be managed via [GNU Stow](https://www.gnu.org/software/stow/). Each top‑level directory corresponds to a group of related configuration files:
 
-- `hypr/` – Hyprland configuration (typically symlinked to `~/.config/hypr`).
-- `systemd/` – user/systemd service and timer unit files (`~/.config/systemd/user/`).
-- `kitty/` – configuration for the Kitty terminal emulator (`~/.config/kitty/`).
-- `waybar/` – Waybar bar configuration (`~/.config/waybar/`).
-- `wlogout/` – lock/logout screen configuration for the wlogout utility.
+- `hypr/` – Hyprland window manager configuration
+  - `hyprland.conf` – Main Hyprland configuration
+  - `keybindings.conf` – Keyboard shortcuts and bindings
+  - `monitors.conf` – Display and monitor settings
+  - `workspaces.conf` – Workspace configuration
+  - `autostart.conf` – Autostart applications on session start
+  - `wallpapers/` – Wallpaper files
+  
+- `systemd/` – User systemd service and target files
+  - `hyprpolkitagent.service` – PolicyKit authentication agent service
+  - `ssh-agent.service` – SSH agent service
+  - `swww.service` – Wallpaper switching service (swww)
+  - `waybar.service` – System tray and status bar service
+  - `default.target.wants/` – Default session targets
+  - `graphical-session.target.wants/` – Graphical session targets
+  
+- `kitty/` – Kitty terminal emulator configuration
+  - `kitty.conf` – Terminal settings, colors, fonts, and keybindings
+  
+- `waybar/` – Waybar status bar configuration
+  - `config.jsonc` – Bar layout, modules, and settings
+  - `style.css` – Bar styling and themes
+  - `icons/` – Custom icon definitions
+  
+- `wlogout/` – Lock/logout utility configuration
+  - `layout` – Button layout and order
+  - `logout` – Logout handling script
+  - `style.css` – Lock screen styling
 
 This layout makes it easy to add or remove individual tools by adjusting the `PACKAGES` array in `install.sh` or by running `stow` manually from the repository root.
 
-## Usage
+## 📖 Usage
 
-Clone this repo into your home directory (e.g. `~/dotfiles`) and symlink the desired files to their expected locations. Adjust paths and options as needed for your distribution.
+### ⚡ Automated Installation
 
-### Example
+The easiest way to set up these dotfiles is using the installation script:
 
 ```bash
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
-ln -s ~/dotfiles/hypr/.config/hypr ~/.config/hypr
-ln -s ~/dotfiles/systemd/* ~/.config/systemd/user/
-```
-
-### Installation Script
-
-An installation helper script (`install.sh`) is provided to simplify setup. It performs several tasks automatically:
-
-1. Ensures the Arch AUR helper `yay` is installed (building it from AUR if necessary).
-2. Installs all required software packages and fonts from the `ALL_SOFTWARE` list:
-   ```
-   noto-fonts-emoji
-   ttf-jetbrains-mono-nerd
-   wlogout
-   fastfetch
-   stow
-   git
-   base-devel     # needed to compile AUR packages
-   ```
-3. Uses GNU Stow to symlink configuration directories (see the `PACKAGES` array):
-   - `hypr` ‒ Hyprland configuration
-   - `systemd` ‒ user/systemd unit files
-   - `kitty` ‒ Kitty terminal settings
-   - `waybar` ‒ Waybar bar configuration
-   - `wlogout` ‒ lock/logout screen configuration
-4. Reloads the systemd user daemon and enables/starts the following services:
-   - `hyprpolkitagent.service`
-   - `ssh-agent.service`
-   - `swww.service`
-   - `waybar.service`
-
-To run the script, make sure the file is executable and then:
-
-```bash
 cd ~/dotfiles
 bash install.sh
-```  
-(You may need to adjust or review the script for your distribution.)
+```
 
-The script is a convenient starting point but manual stow/symlink arrangements are still supported if you prefer finer control.
+The script will handle package installation, configuration linking, and service setup automatically.
 
-## Contributing
+**Note:** You may need to review and adjust the script for your distribution. The script is optimized for Arch Linux and AUR.
 
-Add, modify, or remove configuration files and submit pull requests. Ensure changes are tested on a compatible Linux environment.
+### 🛠️ Manual Installation
 
-## License
+If you prefer finer control, you can use GNU Stow manually:
+
+```bash
+git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+stow hypr systemd kitty waybar wlogout
+```
+
+Then manually install the required packages and enable systemd services as needed.
+
+## ⚙️ Configuration Modules
+
+### 🪟 Hyprland (`hypr/`)
+
+Hyprland is a tiling window manager for Wayland. The configuration is split across multiple files for maintainability:
+
+- **hyprland.conf** – Core Hyprland settings (input, general, animations, window rules)
+- **keybindings.conf** – All keyboard shortcuts and window management bindings
+- **monitors.conf** – Display configuration (resolution, refresh rate, DPI scaling)
+- **workspaces.conf** – Workspace definitions and settings
+- **autostart.conf** – Applications to launch on session start (waybar, swww, cliphist, etc.)
+- **wallpapers/** – Directory containing wallpaper images for swww
+
+**Customization Tips:**
+- Edit `monitors.conf` to adjust display settings for your hardware
+- Modify `keybindings.conf` to change keyboard shortcuts
+- Update `autostart.conf` to launch additional applications
+- Add wallpaper images to `wallpapers/` directory
+
+### 💻 Kitty Terminal (`kitty/`)
+
+Kitty is a modern GPU-based terminal emulator with excellent performance and feature support.
+
+- **kitty.conf** – Font settings, colors, keyboard shortcuts, and other terminal behavior
+
+**Customization Tips:**
+- Adjust font family, size, and line height
+- Customize color schemes and themes
+- Define custom keybindings for terminal operations
+- Configure scrollback history and shell integration
+
+### 📊 Waybar (`waybar/`)
+
+Waybar is a highly customizable status bar for Wayland compositors.
+
+- **config.jsonc** – Module definitions, layout configuration, and behavior settings
+- **style.css** – Colors, spacing, fonts, and visual styling
+- **icons/** – Custom icon mappings and icon theme definitions
+
+**Available Modules (typically configured in config.jsonc):**
+- Clock and calendar display
+- System tray integration
+- Media player controls
+- Network and WiFi status
+- Battery and power status
+- Volume and brightness controls
+- CPU and memory usage
+- Keyboard layout indicator
+- And many more...
+
+**Customization Tips:**
+- Add or remove modules in `config.jsonc`
+- Modify bar position (top/bottom) and margins
+- Customize colors and themes in `style.css`
+- Create custom icon sets in `icons/`
+
+### 🔒 Wlogout (`wlogout/`)
+
+Wlogout provides a lock/logout screen interface for Hyprland sessions.
+
+- **layout** – Button layout configuration (power off, reboot, logout, lock buttons)
+- **logout** – Handler script for shutdown/reboot/logout commands
+- **style.css** – Lock screen visual styling and theme
+
+**Customization Tips:**
+- Modify `layout` to change button arrangement and available options
+- Update `logout` to change system commands (uses systemctl)
+- Customize appearance with `style.css`
+
+### ⚙️ Systemd User Services (`systemd/`)
+
+User-level systemd services that run when the graphical session starts.
+
+**Service Files:**
+- **hyprpolkitagent.service** – Runs the Hyprland PolicyKit agent for authentication prompts
+- **ssh-agent.service** – SSH authentication agent for key management
+- **swww.service** – Wallpaper daemon for dynamic wallpaper support
+- **waybar.service** – System status bar service
+
+**Service Targets:**
+- **default.target.wants/** – Services that should start with the default user target
+- **graphical-session.target.wants/** – Services for the graphical session environment
+
+**Customization Tips:**
+- Edit service files to modify startup behavior or add dependencies
+- Add new service files for additional background daemons
+- Adjust service environment variables as needed
+- See [systemd.service documentation](https://man.archlinux.org/man/systemd.service.5) for options
+
+## ✅ System Requirements
+
+- **Linux Distribution:** Arch Linux (or Arch-based distributions like Manjaro, EndeavourOS)
+- **Window Manager:** Hyprland (Wayland compositor)
+- **Wayland Session:** A Wayland login session (not X11)
+- **Build Tools:** `base-devel` package (required for building AUR packages)
+- **Package Manager:** `pacman` with AUR support (`yay` recommended)
+
+## 📦 Dependencies & Software Stack
+
+The dotfiles require the following software components:
+
+| Component | Purpose |
+|-----------|---------|
+| **hyprland** | Window manager and compositor |
+| **waybar** | System status bar and tray |
+| **kitty** | Terminal emulator |
+| **wlogout** | Lock/logout screen |
+| **hyprpolkitagent** | PolicyKit authentication agent |
+| **swww** | Wallpaper daemon |
+| **ssh-agent** | SSH key management |
+| **wl-clipboard** | X11/Wayland clipboard sync |
+| **cliphist** | Clipboard history |
+| **stow** | Symlink farm manager |
+| **git** | Version control |
+
+All dependencies are automatically installed by the `install.sh` script.
+
+## 🐛 Troubleshooting
+
+### ⚠️ Services not starting
+If systemd services fail to start:
+```bash
+systemctl --user status waybar
+journalctl --user -xe
+```
+Check the service status and logs to identify issues.
+
+### ⚠️ Configuration not loading
+If configurations don't apply after installation:
+```bash
+# Verify stow symlinks were created correctly
+ls -la ~/.config/hypr
+ls -la ~/.config/waybar
+
+# Re-run stow if needed
+cd ~/dotfiles && stow -R hypr waybar kitty systemd wlogout
+```
+
+### ⚠️ Keyboard layouts and input
+Hyprland input settings are configured in `keybindings.conf`. Adjust keyboard layout and repeat rate as needed:
+```
+input {
+    kb_layout = us
+    kb_variant =
+    kb_repeat_delay = 600
+    kb_repeat_rate = 25
+}
+```
+
+### ⚠️ Display scaling and DPI
+Edit `monitors.conf` to adjust display settings for your hardware:
+```
+monitor=HDMI-1,1920x1080@60,0x0,1
+monitor=DP-1,3440x1440@100,1920x0,1
+```
+
+## 📚 Resources & Documentation
+
+- [Hyprland Documentation](https://wiki.hyprland.org/)
+- [Waybar GitHub Repository](https://github.com/Alexays/Waybar)
+- [Kitty Documentation](https://sw.kovidgoyal.net/kitty/)
+- [GNU Stow Manual](https://www.gnu.org/software/stow/manual/)
+- [systemd Documentation](https://systemd.io/)
+- [Wayland Protocol](https://wayland.freedesktop.org/)
+
+## 🤝 Contributing
+
+Add, modify, or remove configuration files and submit pull requests. Ensure changes are tested on a compatible Wayland/Hyprland environment. When contributing:
+
+1. Test your changes thoroughly on a Wayland/Hyprland session
+2. Update the README if adding new files or modules
+3. Ensure all symlinks work correctly with stow
+4. Verify systemd services start without errors
+5. Provide clear commit messages describing changes
+
+## 📄 License
 
 MIT License – feel free to reuse and adapt these dotfiles.
-

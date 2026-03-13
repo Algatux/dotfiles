@@ -31,11 +31,15 @@
         "tooltip": false
     },
     "hyprland/workspaces": {
+        "all-outputs": true,
+        "active-only": false,
         "on-click": "activate",
         "sort-by-number": true,
         "persistent-workspaces": {
             "1": [],
-            "2": []
+            "2": [],
+            "3": [],
+            "4": []
         }
     },
     "hyprland/language": {
