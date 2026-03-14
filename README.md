@@ -4,39 +4,40 @@ This repository stores configuration files ("dotfiles") for a personal Wayland-b
 
 ## 📁 Structure
 
-The repository is organized into subdirectories that are intended to be managed via [GNU Stow](https://www.gnu.org/software/stow/). Each top‑level directory corresponds to a group of related configuration files:
+This repository is organized as a [GNU Stow](https://www.gnu.org/software/stow/) stow farm. Each top‑level directory is a "package" containing a `.config/` tree that will be symlinked into your home directory.
 
-- `hypr/` – Hyprland window manager configuration
-  - `hyprland.conf` – Main Hyprland configuration
-  - `keybindings.conf` – Keyboard shortcuts and bindings
-  - `monitors.conf` – Display and monitor settings
-  - `workspaces.conf` – Workspace configuration
-  - `autostart.conf` – Autostart applications on session start
-  - `hypridle.conf` – Idle management and screen timeout settings
-  - `hyprlock.conf` – Screen lock configuration
-  - `wallpapers/` – Wallpaper files
-  
-- `systemd/` – User systemd service and target files
-  - `hyprpolkitagent.service` – PolicyKit authentication agent service
-  - `ssh-agent.service` – SSH agent service
-  - `swww.service` – Wallpaper switching service (swww)
-  - `waybar.service` – System tray and status bar service
-  - `hypridle.service` – Idle management service
-  - `default.target.wants/` – Default session targets
-  - `graphical-session.target.wants/` – Graphical session targets
-  
-- `kitty/` – Kitty terminal emulator configuration
-  - `kitty.conf` – Terminal settings, colors, fonts, and keybindings
-  
-- `waybar/` – Waybar status bar configuration
-  - `config.jsonc` – Bar layout, modules, and settings
-  - `style.css` – Bar styling and themes
-  - `icons/` – Custom icon definitions
-  
-- `wlogout/` – Lock/logout utility configuration
-  - `layout` – Button layout and order
-  - `logout` – Logout handling script
-  - `style.css` – Lock screen styling
+- `hypr/` – Hyprland configuration (`.config/hypr/`)
+  - `.config/hypr/hyprland.conf` – Main Hyprland configuration
+  - `.config/hypr/keybindings.conf` – Keyboard shortcuts and bindings
+  - `.config/hypr/monitors.conf` – Display and monitor settings
+  - `.config/hypr/workspaces.conf` – Workspace configuration
+  - `.config/hypr/autostart.conf` – Autostart applications on session start
+  - `.config/hypr/hypridle.conf` – Idle management and screen timeout settings
+  - `.config/hypr/hyprlock.conf` – Screen lock configuration
+  - `.config/hypr/windowrules.conf` – Window rules and application behavior
+  - `.config/hypr/wallpapers/` – Wallpaper files
+
+- `systemd/` – User systemd service and target files (`.config/systemd/user/`)
+  - `.config/systemd/user/hyprpolkitagent.service` – PolicyKit authentication agent service
+  - `.config/systemd/user/ssh-agent.service` – SSH agent service
+  - `.config/systemd/user/swww.service` – Wallpaper switching service (swww)
+  - `.config/systemd/user/waybar.service` – System tray and status bar service
+  - `.config/systemd/user/hypridle.service` – Idle management service
+  - `.config/systemd/user/default.target.wants/` – Default session targets
+  - `.config/systemd/user/graphical-session.target.wants/` – Graphical session targets
+
+- `kitty/` – Kitty terminal emulator configuration (`.config/kitty/`)
+  - `.config/kitty/kitty.conf` – Terminal settings, colors, fonts, and keybindings
+
+- `waybar/` – Waybar status bar configuration (`.config/waybar/`)
+  - `.config/waybar/config.jsonc` – Bar layout, modules, and settings
+  - `.config/waybar/style.css` – Bar styling and themes
+  - `.config/waybar/icons/` – Custom icon definitions
+
+- `wlogout/` – Lock/logout utility configuration (`.config/wlogout/`)
+  - `.config/wlogout/layout` – Button layout and order
+  - `.config/wlogout/logout` – Logout handling script
+  - `.config/wlogout/style.css` – Lock screen styling
 
 This layout makes it easy to add or remove individual tools by adjusting the `PACKAGES` array in `install.sh` or by running `stow` manually from the repository root.
 
