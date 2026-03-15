@@ -65,6 +65,6 @@ elif [[ "$TOGGLE" -eq 1 ]]; then
 fi
 
 # Refresh Waybar UI immediately by sending a real-time signal
-# Make sure "signal": 1 is defined in your waybar config module
-pkill -RTMIN+1 waybar 2>/dev/null
+# Make sure "signal": 1 is defined in your waybar config module$
+(sleep 0.1 && pkill -RTMIN+1 waybar) &
 exit 0

@@ -15,7 +15,7 @@
     notification_limit = 5
     
     # Aesthetics (Keeping the Waybar theme)
-    corner_radius = 10
+    corner_radius = 5
     frame_width = 2
     frame_color = "#f38ba8"
     

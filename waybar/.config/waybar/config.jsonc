@@ -2,6 +2,10 @@
     "layer": "top",
     "position": "top",
     "height": 40,
+    "mod": "dock",
+    "exclusive": true,
+    "passthrough": false,
+    "ipc": true,
     "output": [
         "DP-1"
     ],
@@ -83,9 +87,9 @@
         "exec-if": "which hyprctl",
         "exec": "~/.config/hypr/scripts/gamemode.sh 0",
         "on-click": "~/.config/hypr/scripts/gamemode.sh 1",
-        "signal": 1,
-        "interval": "once",
-        "tooltip": true
+        "restart-interval": 1,
+        "tooltip": true,
+        "tooltip-format": "Gaming mode"
     },
     "cpu": {
         "interval": 10,

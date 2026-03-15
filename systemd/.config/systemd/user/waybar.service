@@ -8,8 +8,8 @@ Requisite=graphical-session.target
 [Service]
 ExecStart=/usr/bin/waybar
 ExecReload=kill -SIGUSR2 $MAINPID
-Restart=always
-RestartSec=1
+Restart=on-failure
+RestartSec=2
 
 [Install]
 WantedBy=graphical-session.target
