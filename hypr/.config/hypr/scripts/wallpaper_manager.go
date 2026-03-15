@@ -58,15 +58,19 @@ func main() {
 	// 1. Parse command-line flags
 	flag.Parse()
 
+	duration := time.Duration(*intervalFlag) * time.Second
+	fmt.Printf("Starting Wallpaper Manager. Interval set to: %v\n", duration)
+
 	home, _ := os.UserHomeDir()
 	wallMain := filepath.Join(home, ".config/hypr/wallpapers/main")
 	wallSide := filepath.Join(home, ".config/hypr/wallpapers/side")
 
-	// 2. Daemon check (ensures systemd service is active)
-	if err := exec.Command("swww", "query").Run(); err != nil {
-		fmt.Fprintln(os.Stderr, "Error: swww-daemon is not running.")
-		os.Exit(1)
+	for exec.Command("swww", "query").Run() != nil {
+		fmt.Fprintf(os.Stderr, "[%s] Error: Waiting for swww-daemon...\n", time.Now().Format("15:04:05"))
+		time.Sleep(5 * time.Second)
 	}
+
+	fmt.Println("swww-daemon is running! Proceeding...")
 
 	// 3. Image scan
 	imgsMain, errM := getImages(wallMain)
@@ -76,10 +80,6 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Error: No images found in the specified directories.")
 		os.Exit(1)
 	}
-
-	// 4. Calculate duration from flag
-	duration := time.Duration(*intervalFlag) * time.Second
-	fmt.Printf("Starting Wallpaper Manager. Interval set to: %v\n", duration)
 
 	// Immediate execution for startup
 	changeWallpaper(imgsMain, imgsSide)

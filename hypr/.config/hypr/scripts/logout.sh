@@ -11,9 +11,9 @@ sleep 1
 
 # # 3. Force kill stubborn apps (like VS Code)
 # # VS Code often leaves lock files if not killed decisively
-pkill -9 -u $USER code
-pkill -9 -u $USER discord
-pkill -9 -u $USER steam
+pkill -9 code
+pkill -9 discord
+pkill -9 steam
 
 # 4. Final Exit
 hyprshutdown
