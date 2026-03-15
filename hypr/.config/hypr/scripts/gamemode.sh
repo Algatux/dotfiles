@@ -9,8 +9,8 @@ TOGGLE=$1
 HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')
 
 # Define JSON objects for Waybar integration
-GAME_MODE_ON='{"text": "󰮂", "class": "on", "tooltip": "Gaming Mode: ON (Performance Profile)"}'
-GAME_MODE_OFF='{"text": "󰮃", "class": "off", "tooltip": "Gaming Mode: OFF (Balanced Profile)"}'
+GAME_MODE_ON='{"text": "󰊴", "class": "on", "tooltip": "Gaming Mode: ON (Performance Profile)"}'
+GAME_MODE_OFF='{"text": "󰊵", "class": "off", "tooltip": "Gaming Mode: OFF (Balanced Profile)"}'
 
 # --- STATUS CHECK MODE ---
 # If called with 0, return current state without changing anything

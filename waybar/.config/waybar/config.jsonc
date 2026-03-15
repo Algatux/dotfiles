@@ -89,7 +89,7 @@
         "on-click": "~/.config/hypr/scripts/gamemode.sh 1",
         "restart-interval": 1,
         "tooltip": true,
-        "tooltip-format": "Gaming mode"
+        "tooltip-format": "{}  Gaming mode"
     },
     "cpu": {
         "interval": 10,

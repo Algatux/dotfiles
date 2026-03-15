@@ -34,14 +34,16 @@ window#waybar {
   margin: 5px 0px;
   border-radius: 2px;
 }
+
 #workspaces button {
   padding: 2px 8px;
   color: #fff;
 }
 
 #workspaces button.active {
-    background: #7aa2f7; /* Colore acceso */
-    color: #11111b;
+  background: #7aa2f7;
+  /* Colore acceso */
+  color: #11111b;
 }
 
 #workspaces button.focused {
@@ -167,32 +169,33 @@ window#waybar {
   border-radius: 2px 2px 2px 2px;
 }
 
-#tray > * {
+#tray>* {
   padding: 0 2px;
   margin: 0 2px;
 }
 
 /* Stato Base (Generale) */
 #systemd-failed-units {
-    margin: 5px 0;
-    padding: 0 10px;
-    border-radius: 2px;
-    margin-right: 3px;
+  margin: 5px 0;
+  padding: 0 10px;
+  border-radius: 2px;
+  margin-right: 3px;
 }
 
 #systemd-failed-units.degraded {
-    background-color: #f7768e;
-    color: #24283b;
-    animation-name: blink;
-    animation-duration: 1s;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
+  background-color: #f7768e;
+  color: #24283b;
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
 }
 
 #systemd-failed-units.ok {
-    background-color: #1db329;
-    color: #24283b;
-    animation: none /* Questo blocca il lampeggio */
+  background-color: #1db329;
+  color: #24283b;
+  animation: none
+    /* Questo blocca il lampeggio */
 }
 
 #custom-archlinux {
@@ -232,25 +235,54 @@ window#waybar {
 
 /* Custom Gamemode Module */
 #custom-gamemode {
-    color: #a6adc8; /* Subtext color (neutral) */
-    background-color: #1d202e;
-    padding: 0 10px;
-    padding-right: 13px;
-    margin: 5px 0px;
-    margin-right: 3px;
-    border-radius: 2px;
-    transition: all 0.3s ease;
+  font-size: 20px;
+  color: #a6adc8;
+  /* Subtext color (neutral) */
+  background-color: #1d202e;
+  padding: 0 10px;
+  padding-right: 13px;
+  margin: 5px 0px;
+  margin-right: 3px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
 
 /* State: ON (Gaming Mode Active) */
 /* Usually a vibrant color like Red or Rosewater */
 #custom-gamemode.on {
-    color: #f38ba8; /* Soft Red/Pink accent */
-    background: rgba(243, 139, 168, 0.15); /* Subtle glow effect */
-    border-bottom: 1px solid #f38ba8; /* Underline indicator */
+  color: #f38ba8;
+  /* Soft Red/Pink accent */
+  background: rgba(243, 139, 168, 0.15);
+  /* Subtle glow effect */
+  border-bottom: 1px solid #f38ba8;
+  /* Underline indicator */
 }
 
 /* State: OFF (Normal Mode) */
 #custom-gamemode.off {
-    color: #94e2d5; /* Soft Teal/Green for "Eco/Normal" */
+  color: #94e2d5;
+  /* Soft Teal/Green for "Eco/Normal" */
+}
+
+tooltip {
+  background: #1e1e2e;
+  border-radius: 10px;
+  border: 2px solid #a6adc8;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+tooltip label {
+  color: #cdd6f4;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 14px;
+  padding: 8px;
+}
+
+#custom-gamemode tooltip {
+  border-color: #a6adc8;
+}
+
+#clock tooltip,
+#battery tooltip {
+  border-color: #a6adc8;
 }
