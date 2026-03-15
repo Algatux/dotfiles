@@ -1,292 +1,619 @@
-# 🔧 dotfiles
+# 🔧 Hyprland Wayland Dotfiles
 
-This repository stores configuration files ("dotfiles") for a personal Wayland-based Linux setup. It includes custom settings for Hyprland window manager, systemd services, terminal emulator, status bar, and lock/logout utilities.
+A comprehensive configuration repository for a modern Wayland-based Linux desktop environment using **Hyprland** as the window manager. This setup is optimized for productivity, gaming, and customization with pre-configured integration between multiple tools and utilities.
 
-## 📁 Structure
+## 🌟 Features
 
-This repository is organized as a [GNU Stow](https://www.gnu.org/software/stow/) stow farm. Each top‑level directory is a "package" containing a `.config/` tree that will be symlinked into your home directory.
+- **Hyprland Window Manager** – Tiling compositor for Wayland with advanced animations and GPU acceleration
+- **Gaming Mode** – Performance profile toggle that disables animations, optimizes power settings, and pauses notifications for distraction-free gaming
+- **Custom Waybar Status Bar** – Modular status bar with system tray, clock, media controls, and custom gamemode indicator
+- **Kitty Terminal** – GPU-accelerated terminal with custom fonts and color themes
+- **Desktop Notifications** – Dunst daemon configured to integrate seamlessly with Waybar aesthetic
+- **Systemd User Services** – Automated daemon management for core session components
+- **Automatic Installation** – `install.sh` script handles package installation, symlink management, and service enabling
 
-- `hypr/` – Hyprland configuration (`.config/hypr/`)
-  - `.config/hypr/hyprland.conf` – Main Hyprland configuration
-  - `.config/hypr/keybindings.conf` – Keyboard shortcuts and bindings
-  - `.config/hypr/monitors.conf` – Display and monitor settings
-  - `.config/hypr/workspaces.conf` – Workspace configuration
-  - `.config/hypr/autostart.conf` – Autostart applications on session start
-  - `.config/hypr/hypridle.conf` – Idle management and screen timeout settings
-  - `.config/hypr/hyprlock.conf` – Screen lock configuration
-  - `.config/hypr/windowrules.conf` – Window rules and application behavior
-  - `.config/hypr/wallpapers/` – Wallpaper files
+---
 
-- `systemd/` – User systemd service and target files (`.config/systemd/user/`)
-  - `.config/systemd/user/hyprpolkitagent.service` – PolicyKit authentication agent service
-  - `.config/systemd/user/ssh-agent.service` – SSH agent service
-  - `.config/systemd/user/swww.service` – Wallpaper switching service (swww)
-  - `.config/systemd/user/waybar.service` – System tray and status bar service
-  - `.config/systemd/user/hypridle.service` – Idle management service
-  - `.config/systemd/user/default.target.wants/` – Default session targets
-  - `.config/systemd/user/graphical-session.target.wants/` – Graphical session targets
+## 📁 Project Structure
 
-- `kitty/` – Kitty terminal emulator configuration (`.config/kitty/`)
-  - `.config/kitty/kitty.conf` – Terminal settings, colors, fonts, and keybindings
+This repository follows the [GNU Stow](https://www.gnu.org/software/stow/) symlink farm pattern. Each top-level directory represents a "package" containing a `.config/` subdirectory structure that mirrors your home directory.
 
-- `waybar/` – Waybar status bar configuration (`.config/waybar/`)
-  - `.config/waybar/config.jsonc` – Bar layout, modules, and settings
-  - `.config/waybar/style.css` – Bar styling and themes
-  - `.config/waybar/icons/` – Custom icon definitions
+### Directory Layout
 
-- `wlogout/` – Lock/logout utility configuration (`.config/wlogout/`)
-  - `.config/wlogout/layout` – Button layout and order
-  - `.config/wlogout/logout` – Logout handling script
-  - `.config/wlogout/style.css` – Lock screen styling
+```
+dotfiles/
+├── hypr/                          # Hyprland window manager configuration
+│   └── .config/hypr/
+│       ├── hyprland.conf          # Core Hyprland settings (monitors, keybinds, rules)
+│       ├── keybindings.conf       # All keyboard shortcuts and window management bindings
+│       ├── monitors.conf          # Display configuration (resolution, refresh, scaling)
+│       ├── workspaces.conf        # Workspace setup and behavior
+│       ├── autostart.conf         # Applications to launch on session start
+│       ├── hypridle.conf          # Idle management (screen off, suspend timeouts)
+│       ├── hyprlock.conf          # Screen lock appearance and behavior
+│       ├── windowrules.conf       # Per-app window rules and behaviors
+│       ├── wallpapers/            # Wallpaper images for swww daemon
+│       └── scripts/
+│           └── gamemode.sh        # Gaming Mode toggle script
+│
+├── systemd/                       # User-level systemd services
+│   └── .config/systemd/user/
+│       ├── hyprpolkitagent.service     # PolicyKit authentication service
+│       ├── ssh-agent.service          # SSH key management daemon
+│       ├── swww.service               # Wallpaper daemon
+│       ├── waybar.service             # Status bar service
+│       ├── hypridle.service           # Idle management service
+│       ├── default.target.wants/      # Default session startup targets
+│       └── graphical-session.target.wants/  # Graphical session targets
+│
+├── kitty/                         # Terminal emulator configuration
+│   └── .config/kitty/
+│       └── kitty.conf             # Terminal settings, fonts, colors, keybindings
+│
+├── waybar/                        # Status bar and system tray
+│   └── .config/waybar/
+│       ├── config.jsonc           # Module definitions and layout configuration
+│       ├── style.css              # Colors, fonts, spacing, and visual styling
+│       └── icons/                 # Custom icon definitions and theme
+│
+├── dunst/                         # Desktop notification daemon
+│   └── .config/dunst/
+│       └── dunstrc                # Notification styling, placement, and urgency levels
+│
+├── wlogout/                       # Lock/logout screen interface
+│   └── .config/wlogout/
+│       ├── layout                 # Button layout for power menu
+│       ├── logout                 # Handler script for system commands
+│       └── style.css              # Lock screen styling and theme
+│
+├── install.sh                     # Automated installation and setup script
+└── README.md                      # This file
+```
 
-This layout makes it easy to add or remove individual tools by adjusting the `PACKAGES` array in `install.sh` or by running `stow` manually from the repository root.
+### Stow Farm Concept
 
-## 📖 Usage
+Each directory (e.g., `hypr/`, `kitty/`, `waybar/`) is a Stow "package." Running `stow hypr` creates symlinks from `.config/hypr/` → `~/.config/hypr/`. This modular approach makes it easy to:
+- Enable/disable individual configurations
+- Manage multiple profiles
+- Keep dotfiles organized
 
-### ⚡ Automated Installation (Arch-based)
+---
 
-This repository includes an `install.sh` script that:
+## 🚀 Installation
 
-- Installs required packages (via `yay` for AUR packages)
-- Stows configuration files into your home directory
-- Enables and starts user systemd services
+### Prerequisites
+
+- **OS:** Arch Linux or Arch-based distribution (Manjaro, EndeavourOS, etc.)
+- **Wayland Session:** A Wayland login session (not X11)
+- **Standard Tools:** `git`, `curl`, and `bash`
+
+### Automatic Installation
+
+The easiest way to set up these dotfiles is to run the provided installation script:
 
 ```bash
-git clone <your-dotfiles-repo-url> ~/dotfiles
+# Clone the repository
+git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 cd ~/dotfiles
+
+# Run the installer
 bash install.sh
 ```
 
-If `yay` is not installed, the script will build and install it automatically.
+#### What `install.sh` Does
 
-> Tip: To customize what is linked, edit the `PACKAGES` array in `install.sh` before running the script.
+1. **Installs `yay` (AUR helper)** – If not already installed, builds and installs it from source
+2. **Installs all dependencies** – Uses `yay` to install all required packages (see Dependencies section)
+3. **Symlinks configurations** – Uses `stow` to create symlinks for each package (hypr, kitty, waybar, etc.)
+4. **Enables systemd services** – Reloads systemd daemon and enables/starts user services
+5. **Prints status** – Shows progress and errors for each step
 
-**Note:** The script is intended for Arch Linux and Arch-based distributions (e.g., Manjaro, EndeavourOS). It may require tweaks to work on other distros.
+### Manual Installation
 
-### 🛠️ Manual Installation
-
-If you prefer finer control, you can use GNU Stow manually:
+If you prefer granular control, use Stow manually:
 
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow hypr systemd kitty waybar wlogout
+
+# Manually stow packages
+stow hypr systemd kitty waybar dunst wlogout
+
+# Install dependencies via your package manager
+sudo pacman -S hyprland waybar kitty wlogout hyprlock hypridle dunst stow yay git base-devel
+
+# Enable and start services
+systemctl --user daemon-reload
+systemctl --user enable --now waybar.service hypridle.service hyprpolkitagent.service swww.service ssh-agent.service
 ```
 
-Then manually install the required packages and enable systemd services as needed.
+### Customizing Installation
+
+Edit `install.sh` before running it to customize which packages are installed:
+
+```bash
+# In install.sh, modify PACKAGES array:
+PACKAGES=("hypr" "systemd" "kitty" "waybar" "dunst" "wlogout")
+
+# And modify ALL_SOFTWARE array to add/remove packages:
+ALL_SOFTWARE=(
+    "hyprland"
+    "waybar"
+    "kitty"
+    # ... add or remove as needed
+)
+```
+
+---
 
 ## ⚙️ Configuration Modules
 
 ### 🪟 Hyprland (`hypr/`)
 
-Hyprland is a tiling window manager for Wayland. The configuration is split across multiple files for maintainability:
+Hyprland is a tiling compositor for Wayland with advanced animations, multiple workspace support, and GPU acceleration. The configuration is split into modular files for easier maintenance.
 
-- **hyprland.conf** – Core Hyprland settings (input, general, animations, window rules)
-- **keybindings.conf** – All keyboard shortcuts and window management bindings
-- **monitors.conf** – Display configuration (resolution, refresh rate, DPI scaling)
-- **workspaces.conf** – Workspace definitions and settings
-- **autostart.conf** – Applications to launch on session start (waybar, swww, cliphist, etc.)
-- **hypridle.conf** – Idle timeout settings (screen off, suspend after inactivity)
-- **hyprlock.conf** – Screen lock appearance and behavior configuration
-- **wallpapers/** – Directory containing wallpaper images for swww
+**Core Files:**
+
+- **`hyprland.conf`** – Main configuration file that includes all other configs and sets core Hyprland behavior (decorations, animations, input settings, general options)
+
+- **`keybindings.conf`** – All keyboard shortcuts organized by function:
+  - Window management (focus, move, resize, fullscreen, float)
+  - Workspace switching
+  - Application launching
+  - Gaming Mode toggle (`$mainMod+Shift+G`)
+  - Media/brightness controls
+
+- **`monitors.conf`** – Display configuration with monitor definitions:
+  ```
+  monitor=HDMI-1,1920x1080@60,0x0,1
+  monitor=DP-1,3440x1440@100,1920x0,1
+  ```
+  Adjust resolution, refresh rate, position, and scaling for each display
+
+- **`workspaces.conf`** – Workspace settings and per-workspace configurations
+
+- **`autostart.conf`** – Applications/commands to execute on session start:
+  - Daemons: `waybar`, `swww`, `cliphist`
+  - Environment variables: Wayland/XDG settings
+  - Wallpaper loading
+
+- **`hypridle.conf`** – Idle management settings:
+  - Screen timeout (e.g., turn off after 5 minutes)
+  - Suspend behavior (e.g., suspend after 10 minutes)
+  - Lock behavior (e.g., lock on idle)
+
+- **`hyprlock.conf`** – Screen lock appearance:
+  - Login widget styling
+  - Password input appearance
+  - Background/wallpaper display
+
+- **`windowrules.conf`** – Application-specific window rules:
+  - Window size/positioning
+  - Floating vs tiling behavior
+  - Opacity and animation rules
+
+- **`wallpapers/`** – Directory containing wallpaper images used by `swww`
+
+- **`scripts/gamemode.sh`** – Gaming Mode toggle script that:
+  - Disables animations, shadows, and blur
+  - Sets system power profile to `performance`
+  - Pauses desktop notifications via `dunstctl`
+  - Can be toggled via keybinding or Waybar module
 
 **Customization Tips:**
-- Edit `monitors.conf` to adjust display settings for your hardware
+
+- Update `monitors.conf` if your display setup differs
 - Modify `keybindings.conf` to change keyboard shortcuts
-- Update `autostart.conf` to launch additional applications
-- Configure idle timeouts and lock behavior in `hypridle.conf` and `hyprlock.conf`
-- Add wallpaper images to `wallpapers/` directory
+- Add applications to `autostart.conf` for automatic launching
+- Adjust idle timeouts in `hypridle.conf` for your preference
+- Add window rules in `windowrules.conf` for app-specific behavior
 
-### 🎮 Gaming Mode (Performance Profile)
+### 🎮 Gaming Mode
 
-This setup includes a “Gaming Mode” toggle that adjusts Hyprland and system settings for lower input latency and higher performance:
+Gaming Mode is a performance profile toggle that optimizes Hyprland for gaming:
 
-- Disables animations, shadows, blur, and gaps in Hyprland
-- Switches `powerprofilesctl` to `performance`
-- Pauses desktop notifications via `dunstctl` (resumes on exit)
-- Reverts settings by reloading Hyprland config and switching back to `balanced`
+**What it does:**
+- Disables animations, shadows, blur, and window gaps in Hyprland (reduces latency and CPU usage)
+- Sets system power profile to `performance` (unlocks higher CPU/GPU clocks)
+- Pauses desktop notifications (prevents popups during gameplay)
 
-You can toggle it via:
-- **Waybar module:** `custom/gamemode` (in `waybar/config.jsonc`)
-- **Keybinding:** `$mainMod+Shift+G` (defined in `hypr/keybindings.conf`)
+**How to use:**
+- **Keybinding:** Press `$mainMod + Shift + G` to toggle
+- **Waybar Module:** Click the gaming mode icon in the status bar
 
-This is implemented in `hypr/scripts/gamemode.sh` (which uses `notify-send` + `dunstctl`).
+**How it works:**
+- Implemented in `hypr/scripts/gamemode.sh`
+- Script checks Hyprland's `animations:enabled` option to detect current state
+- On enable: runs `hyprctl` commands to disable effects + `powerprofilesctl set performance` + `dunstctl set-paused true`
+- On disable: runs `hyprctl reload` to restore config + `powerprofilesctl set balanced` + `dunstctl set-paused false`
 
 ### 💻 Kitty Terminal (`kitty/`)
 
-Kitty is a modern GPU-based terminal emulator with excellent performance and feature support.
+Kitty is a modern, GPU-accelerated terminal emulator with excellent performance and feature support.
 
-- **kitty.conf** – Font settings, colors, keyboard shortcuts, and other terminal behavior
+**Configuration:**
+
+- **`kitty.conf`** – Master configuration file including:
+  - Font family and size (default: JetBrains Mono Nerd Font)
+  - Color scheme and theme
+  - Keyboard shortcuts for terminal operations
+  - Scrollback history settings
+  - Mouse and copy-paste behavior
+  - Shell integration
+  - Padding and line height
 
 **Customization Tips:**
-- Adjust font family, size, and line height
-- Customize color schemes and themes
-- Define custom keybindings for terminal operations
-- Configure scrollback history and shell integration
+
+- Change font: `font_family` and `font_size` options
+- Modify colors: Update color palette definitions
+- Define custom keybindings for terminal-specific operations
+- Adjust scrollback to control history depth
 
 ### 📊 Waybar (`waybar/`)
 
-Waybar is a highly customizable status bar for Wayland compositors.
+Waybar is a highly customizable status bar for Wayland. It displays system information, has integrated system tray, and supports custom modules.
 
-- **config.jsonc** – Module definitions, layout configuration, and behavior settings
-- **style.css** – Colors, spacing, fonts, and visual styling
-- **icons/** – Custom icon mappings and icon theme definitions
+**Configuration:**
 
-**Available Modules (typically configured in config.jsonc):**
-- Clock and calendar display
-- System tray integration
-- Media player controls
-- Network and WiFi status
-- Battery and power status
-- Volume and brightness controls
-- CPU and memory usage
-- Keyboard layout indicator
+- **`config.jsonc`** – Defines modules, layout, and behavior:
+  - Modules list and order
+  - Module-specific settings (pulse, network, battery, etc.)
+  - Bar position and margins
+  - Systemd service integration
+  - Gaming Mode custom module
+  - Shortcuts and click commands
+  - Signal handlers for real-time updates
+
+- **`style.css`** – Visual styling:
+  - Colors and themes (matches Hyprland aesthetic)
+  - Font and text styling
+  - Module spacing and sizing
+  - Hover and active states
+  - Progress bar styling
+  - Gaming Mode indicator styling
+
+- **`icons/`** – Custom icon definitions and theme overrides
+
+**Available Modules:**
+
+- `clock` – Date and time display
+- `network` – WiFi status and connectivity
+- `battery` – Battery percentage and status
+- `pulseaudio` – Volume control
+- `backlight` – Screen brightness
+- `cpu` – CPU usage percentage
+- `memory` – RAM usage
+- `disk` – Disk space usage
+- `custom/gamemode` – Gaming Mode indicator (custom module)
+- `tray` – System tray integration
 - And many more...
 
 **Customization Tips:**
-- Add or remove modules in `config.jsonc`
+
+- Add/remove modules by editing `config.jsonc`
 - Modify bar position (top/bottom) and margins
-- Customize colors and themes in `style.css`
-- Create custom icon sets in `icons/`
+- Customize colors and fonts in `style.css`
+- Create custom modules for specific tasks
+- Adjust update intervals for performance
 
-### � Dunst Notifications (`dunst/`)
+### 🔔 Dunst Notifications (`dunst/`)
 
-Dunst is the desktop notification daemon used by this setup. It is configured to match the Waybar theme and is paused during Gaming Mode to prevent popups while gaming.
+Dunst is a lightweight notification daemon that displays desktop notifications. It integrates with Hyprland and is paused during Gaming Mode.
 
-- **dunstrc** – Notification styling, placement, and behavior (located at `dunst/.config/dunst/dunstrc`)
-- Gaming Mode uses `dunstctl set-paused true/false` to pause and resume notifications.
+**Configuration:**
 
-**Getting started:**
-- Ensure `dunst` is installed (the install script includes it as a dependency).
-- Start it automatically via Hyprland autostart (e.g., add `exec-once = dunst` to `hypr/autostart.conf`) or with a systemd user service.
+- **`dunstrc`** – Main configuration file:
+  - Monitor selection where notifications appear
+  - Origin and offset (where notifications spawn on screen)
+  - Width, height, and dynamic sizing
+  - Notification limits
+  - Corner radius and frame styling
+  - Font selection (matches Waybar aesthetic)
+  - Padding and spacing
+  - Progress bars for volume/brightness feedback
+  - Urgency levels (low, normal, critical) with different styling/timeouts
 
-### �🔒 Wlogout (`wlogout/`)
+**Urgency Levels:**
 
-Wlogout provides a lock/logout screen interface for Hyprland sessions.
+- `low` – 5 second timeout, muted colors
+- `normal` – 10 second timeout, standard visibility
+- `critical` – No timeout, highlighted with red frame
 
-- **layout** – Button layout configuration (power off, reboot, logout, lock buttons)
-- **logout** – Handler script for shutdown/reboot/logout commands
-- **style.css** – Lock screen visual styling and theme
+**Gaming Mode Integration:**
+
+During Gaming Mode, the `gamemode.sh` script pauses notifications:
+```bash
+dunstctl set-paused true   # Pause on enable
+dunstctl set-paused false  # Resume on disable
+```
 
 **Customization Tips:**
-- Modify `layout` to change button arrangement and available options
-- Update `logout` to change system commands (uses systemctl)
-- Customize appearance with `style.css`
+
+- Adjust `timeout` values for notification duration
+- Change colors to match your theme
+- Modify `offset` to reposition notifications
+- Adjust `width` and `height` for different screen sizes
+- Enable/disable `progress_bar` for volume/brightness feedback
+
+### 🔒 Wlogout (`wlogout/`)
+
+Wlogout provides an on-screen lock/logout/power menu interface for Hyprland sessions.
+
+**Configuration:**
+
+- **`layout`** – Button layout definition:
+  - Specifies which buttons appear and their order
+  - Button labels and icons
+  - Button actions (power off, reboot, logout, lock, etc.)
+
+- **`logout`** – Handler script:
+  - Executes system commands based on button clicks
+  - Uses `systemctl` for power operations
+  - Handles logout and lock actions
+
+- **`style.css`** – Visual styling:
+  - Background and overall layout styling
+  - Button appearance, hover, and active states
+  - Theming and colors
+
+**Customization Tips:**
+
+- Edit `layout` to add/remove buttons or change their order
+- Modify `logout` script to customize system commands
+- Adjust `style.css` for color and appearance changes
 
 ### ⚙️ Systemd User Services (`systemd/`)
 
-User-level systemd services that run when the graphical session starts.
+User-level systemd services that manage daemons and utilities for the graphical session.
 
 **Service Files:**
-- **hyprpolkitagent.service** – Runs the Hyprland PolicyKit agent for authentication prompts
-- **ssh-agent.service** – SSH authentication agent for key management
-- **swww.service** – Wallpaper daemon for dynamic wallpaper support
-- **waybar.service** – System status bar service
-- **hypridle.service** – Idle management service for screen timeout and suspend
+
+- **`hyprpolkitagent.service`** – PolicyKit authentication agent
+  - Handles password prompts for privileged operations
+  - Launched on graphical session start
+
+- **`ssh-agent.service`** – SSH key management
+  - Manages SSH keys for authentication
+  - Provides SSH_AUTH_SOCK environment variable
+
+- **`swww.service`** – Wallpaper daemon
+  - Manages desktop wallpapers
+  - Supports animated wallpapers via swww
+
+- **`waybar.service`** – Status bar service
+  - Runs the Waybar process
+  - Respawn on crash
+
+- **`hypridle.service`** – Idle management
+  - Monitors user activity
+  - Triggers idle actions (screen off, suspend, lock)
 
 **Service Targets:**
-- **default.target.wants/** – Services that should start with the default user target
-- **graphical-session.target.wants/** – Services for the graphical session environment
+
+- **`default.target.wants/`** – Services linked here start with the default user target
+- **`graphical-session.target.wants/`** – Services linked here start with the graphical session
 
 **Customization Tips:**
-- Edit service files to modify startup behavior or add dependencies
-- Add new service files for additional background daemons
-- Adjust service environment variables as needed
-- See [systemd.service documentation](https://man.archlinux.org/man/systemd.service.5) for options
+
+- Edit service files to add dependencies or environment variables
+- Create new service files for custom daemons
+- Adjust `Type` and `Restart` policies for different behavior
+- Use `Environment` and `ExecStart` to customize commands
+
+---
 
 ## ✅ System Requirements
 
-- **Linux Distribution:** Arch Linux (or Arch-based distributions like Manjaro, EndeavourOS)
-- **Window Manager:** Hyprland (Wayland compositor)
-- **Wayland Session:** A Wayland login session (not X11)
-- **Build Tools:** `base-devel` package (required for building AUR packages)
-- **Package Manager:** `pacman` (the install script uses `yay` for AUR packages; it will install `yay` if missing)
-- **Symlink Manager:** `stow` (used to link configuration files into `~/.config`)
+- **Distribution:** Arch Linux, Manjaro, EndeavourOS, or other Arch-based distribution
+- **Display Server:** Wayland (not X11)
+- **Build Tools:** `base-devel` package (required for building AUR packages with `yay`)
+- **Package Manager:** `pacman` (with AUR support via `yay`)
+- **Symlink Manager:** `stow` (for managing dotfiles)
+
+---
 
 ## 📦 Dependencies & Software Stack
 
-The dotfiles require the following software components:
+| Component | Purpose | Package Manager |
+|-----------|---------|-----------------|
+| **hyprland** | Window manager and Wayland compositor | Official Repos |
+| **waybar** | Customizable status bar for Wayland | Official Repos |
+| **kitty** | GPU-accelerated terminal emulator | Official Repos |
+| **wlogout** | On-screen logout/power menu | Official Repos |
+| **hyprpolkitagent** | PolicyKit authentication agent for Hyprland | Official Repos |
+| **hypridle** | Idle management daemon with screen timeout | Official Repos |
+| **hyprlock** | Screen lock utility for Hyprland | Official Repos |
+| **hyprshutdown** | Power menu helper for Hyprland sessions | AUR |
+| **swww** | Wallpaper daemon with animation support | AUR |
+| **ssh-agent** | SSH key management utility | Official Repos |
+| **wl-clipboard** | X11/Wayland clipboard synchronization | Official Repos |
+| **cliphist** | Clipboard history manager | AUR |
+| **power-profiles-daemon** | Power management profile switcher | Official Repos |
+| **dunst** | Lightweight desktop notification daemon | Official Repos |
+| **noto-fonts-emoji** | Noto emoji font family | Official Repos |
+| **ttf-jetbrains-mono-nerd** | JetBrains Mono Nerd Font (used in terminal/status bar) | AUR |
+| **stow** | Symlink farm manager (GNU Stow) | Official Repos |
+| **yay** | AUR helper (automatically installed by script) | AUR |
+| **git** | Version control system | Official Repos |
+| **base-devel** | Build tools and development utilities | Official Repos |
 
-| Component | Purpose |
-|-----------|---------|
-| **hyprland** | Window manager and compositor |
-| **waybar** | System status bar and tray |
-| **kitty** | Terminal emulator |
-| **wlogout** | Lock/logout screen |
-| **hyprpolkitagent** | PolicyKit authentication agent |
-| **hypridle** | Idle management daemon |
-| **hyprlock** | Screen lock utility |
-| **hyprshutdown** | Power menu helper for Hyprland |
-| **swww** | Wallpaper daemon |
-| **ssh-agent** | SSH key management |
-| **wl-clipboard** | X11/Wayland clipboard sync |
-| **cliphist** | Clipboard history |
-| **power-profiles-daemon** | Power management profiles |
-| **dunst** | Desktop notification daemon (paused during Gaming Mode) |
-| **stow** | Symlink farm manager |
-| **yay** | AUR helper used by the install script |
-| **git** | Version control |
+**All dependencies are automatically installed by `install.sh`.**
 
-All dependencies are automatically installed by the `install.sh` script.
+---
 
-## 🐛 Troubleshooting
+## 🛠️ Usage & Customization
 
-### ⚠️ Services not starting
-If systemd services fail to start:
-```bash
-systemctl --user status waybar
-journalctl --user -xe
+### Basic Usage
+
+After installation, your Hyprland session should start automatically on the next login. Default keybindings include:
+
+- `$mainMod + Return` – Open terminal (Kitty)
+- `$mainMod + Q` – Close focused window
+- `$mainMod + V` – Toggle floating window
+- `$mainMod + F` – Toggle fullscreen
+- `$mainMod + 1-9` – Switch to workspace 1-9
+- `$mainMod + Shift + 1-9` – Move window to workspace 1-9
+- `$mainMod + Shift + G` – Toggle Gaming Mode
+- `$mainMod + E` – Open file manager
+- `$mainMod + Esc` – Open logout menu (wlogout)
+
+See [keybindings.conf](hypr/.config/hypr/keybindings.conf) for the complete list.
+
+### Customizing Displays
+
+Edit `hypr/monitors.conf` with your display configuration:
+
 ```
-Check the service status and logs to identify issues.
-
-### ⚠️ Configuration not loading
-If configurations don't apply after installation:
-```bash
-# Verify stow symlinks were created correctly
-ls -la ~/.config/hypr
-ls -la ~/.config/waybar
-
-# Re-run stow if needed
-cd ~/dotfiles && stow -R hypr waybar kitty systemd wlogout
+# Format: monitor=NAME,RESOLUTION@REFRESH,POSITION,SCALE
+monitor=DP-1,3440x1440@100,0x0,1
+monitor=HDMI-1,1920x1080@60,3440x0,1.25
+monitor=eDP-1,disable  # Disable built-in laptop display
 ```
 
-### ⚠️ Keyboard layouts and input
-Hyprland input settings are configured in `keybindings.conf`. Adjust keyboard layout and repeat rate as needed:
+Run `hyprctl monitors` to list connected displays and their names.
+
+### Customizing Keybindings
+
+Edit `hypr/keybindings.conf` to add/modify shortcuts:
+
 ```
-input {
-    kb_layout = us
-    kb_variant =
-    kb_repeat_delay = 600
-    kb_repeat_rate = 25
+# Syntax: bind = MODIFIERS, KEY, DISPATCHER, ARGUMENTS
+bind = $mainMod, Q, killactive
+bind = $mainMod SHIFT, Q, exec, systemctl poweroff
+```
+
+### Customizing Autostart Applications
+
+Edit `hypr/autostart.conf` to add applications that launch on session start:
+
+```
+# Syntax: exec-once = command
+exec-once = $terminal  # Start terminal
+exec-once = firefox &  # Start Firefox in background
+```
+
+### Customizing Idle Behavior
+
+Edit `hypr/hypridle.conf` to adjust screen timeout and suspend behavior:
+
+```
+listener {
+    timeout = 300    # 5 minutes
+    on-timeout = hyprctl dispatch dpms off
+    on-resume = hyprctl dispatch dpms on
 }
 ```
 
-### ⚠️ Display scaling and DPI
-Edit `monitors.conf` to adjust display settings for your hardware:
-```
-monitor=HDMI-1,1920x1080@60,0x0,1
-monitor=DP-1,3440x1440@100,1920x0,1
+### Enabling Additional Waybar Modules
+
+Edit `waybar/config.jsonc` to add more modules to the status bar:
+
+```json
+"modules-center": [
+    "clock",
+    "custom/weather",  // Add custom weather module
+    "custom/gamemode"
+]
 ```
 
-## 📚 Resources & Documentation
+### Customizing Waybar Styling
 
-- [Hyprland Documentation](https://wiki.hyprland.org/)
-- [Waybar GitHub Repository](https://github.com/Alexays/Waybar)
-- [Kitty Documentation](https://sw.kovidgoyal.net/kitty/)
-- [GNU Stow Manual](https://www.gnu.org/software/stow/manual/)
-- [systemd Documentation](https://systemd.io/)
-- [Wayland Protocol](https://wayland.freedesktop.org/)
+Edit `waybar/style.css` to change colors, fonts, and layout:
+
+```css
+* {
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    color: #cdd6f4;
+    background: #1e1e2e;
+}
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Hyprland won't start
+
+1. Ensure you're using a Wayland session (not X11)
+2. Check if required packages are installed: `pacman -Q hyprland waybar`
+3. View Hyprland logs: `journalctl --user -u Hyprland -n 50`
+
+### Waybar not showing
+
+1. Verify symlinks are correct: `ls -la ~/.config/waybar/`
+2. Check service status: `systemctl --user status waybar`
+3. Restart the service: `systemctl --user restart waybar`
+
+### Configurations not loading after stow
+
+1. Verify symlinks were created: `ls -la ~/.config/hypr/`
+2. Re-run stow with force: `cd ~/dotfiles && stow -R hypr waybar kitty systemd wlogout dunst`
+3. Reload Hyprland: `$mainMod + Esc` then open a new session
+
+### Gaming Mode not toggling
+
+1. Ensure `powerprofilesctl` is installed: `pacman -Q power-profiles-daemon`
+2. Check if Gaming Mode script is executable: `ls -la ~/.config/hypr/scripts/gamemode.sh`
+3. Test manually: `~/.config/hypr/scripts/gamemode.sh 1`
+
+### Notifications not appearing
+
+1. Ensure `dunst` is running: `pgrep dunst`
+2. Start dunst manually: `dunst &`
+3. Add to autostart: Edit `hypr/autostart.conf` and add `exec-once = dunst`
+
+### Terminal/fonts look wrong
+
+1. Install required fonts: `sudo pacman -S ttf-jetbrains-mono-nerd noto-fonts-emoji`
+2. Reload terminal: Close and reopen Kitty
+3. Check font settings in `kitty/kitty.conf`
+
+---
 
 ## 🤝 Contributing
 
-Add, modify, or remove configuration files and submit pull requests. Ensure changes are tested on a compatible Wayland/Hyprland environment. When contributing:
+Contributions are welcome! To contribute:
 
-1. Test your changes thoroughly on a Wayland/Hyprland session
-2. Update the README if adding new files or modules
-3. Ensure all symlinks work correctly with stow
-4. Verify systemd services start without errors
-5. Provide clear commit messages describing changes
+1. **Test thoroughly** – Ensure changes work on a fresh Wayland/Hyprland session
+2. **Update documentation** – Modify the README if adding new files or features
+3. **Verify symlinks** – Run `stow` to ensure configurations link correctly
+4. **Check services** – Confirm systemd services start without errors
+5. **Commit clearly** – Use clear, descriptive commit messages
+
+### Submitting Changes
+
+```bash
+# Create a feature branch
+git checkout -b feature/my-improvement
+
+# Make your changes and commit
+git add .
+git commit -m "Add feature: brief description"
+
+# Push and open a pull request
+git push origin feature/my-improvement
+```
+
+---
 
 ## 📄 License
 
-MIT License – feel free to reuse and adapt these dotfiles.
+MIT License – Feel free to reuse, modify, and adapt these dotfiles for your setup. See the LICENSE file for full details (if included).
+
+---
+
+## 📚 Useful Resources
+
+- [Hyprland Wiki](https://wiki.hyprland.org/) – Comprehensive Hyprland documentation
+- [Waybar GitHub](https://github.com/Alexays/Waybar) – Waybar source and module documentation
+- [Kitty Documentation](https://sw.kovidgoyal.net/kitty/) – Kitty terminal documentation
+- [Dunst GitHub](https://github.com/dunst-project/dunst) – Dunst notification daemon
+- [GNU Stow Manual](https://www.gnu.org/software/stow/manual/) – Symlink farm management
+- [systemd User Services](https://wiki.archlinux.org/title/Systemd/User) – User service guide
+- [Wayland Protocol](https://wayland.freedesktop.org/) – Wayland display server protocol
+
+---
+
+**Happy tiling! 🚀**
