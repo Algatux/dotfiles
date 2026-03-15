@@ -43,19 +43,25 @@ This layout makes it easy to add or remove individual tools by adjusting the `PA
 
 ## 📖 Usage
 
-### ⚡ Automated Installation
+### ⚡ Automated Installation (Arch-based)
 
-The easiest way to set up these dotfiles is using the installation script:
+This repository includes an `install.sh` script that:
+
+- Installs required packages (via `yay` for AUR packages)
+- Stows configuration files into your home directory
+- Enables and starts user systemd services
 
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+git clone <your-dotfiles-repo-url> ~/dotfiles
 cd ~/dotfiles
 bash install.sh
 ```
 
-The script will handle package installation, configuration linking, and service setup automatically.
+If `yay` is not installed, the script will build and install it automatically.
 
-**Note:** You may need to review and adjust the script for your distribution. The script is optimized for Arch Linux and AUR.
+> Tip: To customize what is linked, edit the `PACKAGES` array in `install.sh` before running the script.
+
+**Note:** The script is intended for Arch Linux and Arch-based distributions (e.g., Manjaro, EndeavourOS). It may require tweaks to work on other distros.
 
 ### 🛠️ Manual Installation
 
@@ -90,6 +96,21 @@ Hyprland is a tiling window manager for Wayland. The configuration is split acro
 - Update `autostart.conf` to launch additional applications
 - Configure idle timeouts and lock behavior in `hypridle.conf` and `hyprlock.conf`
 - Add wallpaper images to `wallpapers/` directory
+
+### 🎮 Gaming Mode (Performance Profile)
+
+This setup includes a “Gaming Mode” toggle that adjusts Hyprland and system settings for lower input latency and higher performance:
+
+- Disables animations, shadows, blur, and gaps in Hyprland
+- Switches `powerprofilesctl` to `performance`
+- Pauses desktop notifications via `dunstctl` (resumes on exit)
+- Reverts settings by reloading Hyprland config and switching back to `balanced`
+
+You can toggle it via:
+- **Waybar module:** `custom/gamemode` (in `waybar/config.jsonc`)
+- **Keybinding:** `$mainMod+Shift+G` (defined in `hypr/keybindings.conf`)
+
+This is implemented in `hypr/scripts/gamemode.sh` (which uses `notify-send` + `dunstctl`).
 
 ### 💻 Kitty Terminal (`kitty/`)
 
@@ -128,7 +149,18 @@ Waybar is a highly customizable status bar for Wayland compositors.
 - Customize colors and themes in `style.css`
 - Create custom icon sets in `icons/`
 
-### 🔒 Wlogout (`wlogout/`)
+### � Dunst Notifications (`dunst/`)
+
+Dunst is the desktop notification daemon used by this setup. It is configured to match the Waybar theme and is paused during Gaming Mode to prevent popups while gaming.
+
+- **dunstrc** – Notification styling, placement, and behavior (located at `dunst/.config/dunst/dunstrc`)
+- Gaming Mode uses `dunstctl set-paused true/false` to pause and resume notifications.
+
+**Getting started:**
+- Ensure `dunst` is installed (the install script includes it as a dependency).
+- Start it automatically via Hyprland autostart (e.g., add `exec-once = dunst` to `hypr/autostart.conf`) or with a systemd user service.
+
+### �🔒 Wlogout (`wlogout/`)
 
 Wlogout provides a lock/logout screen interface for Hyprland sessions.
 
@@ -168,7 +200,8 @@ User-level systemd services that run when the graphical session starts.
 - **Window Manager:** Hyprland (Wayland compositor)
 - **Wayland Session:** A Wayland login session (not X11)
 - **Build Tools:** `base-devel` package (required for building AUR packages)
-- **Package Manager:** `pacman` with AUR support (`yay` recommended)
+- **Package Manager:** `pacman` (the install script uses `yay` for AUR packages; it will install `yay` if missing)
+- **Symlink Manager:** `stow` (used to link configuration files into `~/.config`)
 
 ## 📦 Dependencies & Software Stack
 
@@ -183,11 +216,15 @@ The dotfiles require the following software components:
 | **hyprpolkitagent** | PolicyKit authentication agent |
 | **hypridle** | Idle management daemon |
 | **hyprlock** | Screen lock utility |
+| **hyprshutdown** | Power menu helper for Hyprland |
 | **swww** | Wallpaper daemon |
 | **ssh-agent** | SSH key management |
 | **wl-clipboard** | X11/Wayland clipboard sync |
 | **cliphist** | Clipboard history |
+| **power-profiles-daemon** | Power management profiles |
+| **dunst** | Desktop notification daemon (paused during Gaming Mode) |
 | **stow** | Symlink farm manager |
+| **yay** | AUR helper used by the install script |
 | **git** | Version control |
 
 All dependencies are automatically installed by the `install.sh` script.

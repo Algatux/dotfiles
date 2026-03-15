@@ -229,3 +229,28 @@ window#waybar {
   color: #7aa2f7;
   text-shadow: 0 0 5px rgba(122, 162, 247, 0.5);
 }
+
+/* Custom Gamemode Module */
+#custom-gamemode {
+    color: #a6adc8; /* Subtext color (neutral) */
+    background-color: #1d202e;
+    padding: 0 10px;
+    padding-right: 13px;
+    margin: 5px 0px;
+    margin-right: 3px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* State: ON (Gaming Mode Active) */
+/* Usually a vibrant color like Red or Rosewater */
+#custom-gamemode.on {
+    color: #f38ba8; /* Soft Red/Pink accent */
+    background: rgba(243, 139, 168, 0.15); /* Subtle glow effect */
+    border-bottom: 1px solid #f38ba8; /* Underline indicator */
+}
+
+/* State: OFF (Normal Mode) */
+#custom-gamemode.off {
+    color: #94e2d5; /* Soft Teal/Green for "Eco/Normal" */
+}

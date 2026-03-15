@@ -2,7 +2,7 @@
 
 # --- Configuration ---
 DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-PACKAGES=("hypr" "systemd" "kitty" "waybar" "wlogout")
+PACKAGES=("hypr" "systemd" "kitty" "waybar" "wlogout", "dunst")
 ALL_SOFTWARE=(
     "noto-fonts-emoji" 
     "ttf-jetbrains-mono-nerd" 
@@ -16,6 +16,7 @@ ALL_SOFTWARE=(
     "base-devel"
     "wl-clipboard"
     "cliphist"
+    "power-profiles-daemon"
 )
 SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service", "hypridle.service")
 TARGET_DIR="$HOME"

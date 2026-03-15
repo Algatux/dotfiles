@@ -5,7 +5,6 @@
     "output": [
         "DP-1"
     ],
-
     "modules-left": [
         "custom/archlinux",
         "hyprland/workspaces",
@@ -17,6 +16,7 @@
     "modules-right": [
         "systemd-failed-units",
         "tray",
+        "custom/gamemode",
         "cpu",
         "memory",
         "disk",
@@ -26,15 +26,12 @@
         "clock",
         "custom/powerbutton"
     ],
-
     // --- MODULES LEFT ---
-
     "custom/archlinux": {
         "format": "    ",
         "on-click": "kitty --class fastfetch-pop -e sh -c 'fastfetch; zsh'",
         "tooltip": false
     },
-
     "hyprland/workspaces": {
         "all-outputs": true,
         "active-only": false,
@@ -47,16 +44,13 @@
             "4": []
         }
     },
-
     "custom/clipboard": {
         "format": "󰅍",
         "on-click": "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy",
         "on-click-right": "cliphist wipe",
         "tooltip-format": "Left: History\nRight: Cleanup"
     },
-
     // --- MODULES CENTER ---
-
     "hyprland/window": {
         "format": "{}",
         "rewrite": {
@@ -66,9 +60,7 @@
         },
         "separate-outputs": false
     },
-
     // --- MODULES RIGHT ---
-
     "systemd-failed-units": {
         "hide-on-ok": false,
         "format": "✗ {nr_failed}",
@@ -76,7 +68,6 @@
         "system": true,
         "user": true
     },
-
     "tray": {
         "spacing": 10,
         "show-passive-items": true,
@@ -86,28 +77,34 @@
             "nm-applet": "/home/alga/.config/waybar/icons/network-48.png"
         }
     },
-
+    "custom/gamemode": {
+        "format": "{}",
+        "return-type": "json",
+        "exec-if": "which hyprctl",
+        "exec": "~/.config/hypr/scripts/gamemode.sh 0",
+        "on-click": "~/.config/hypr/scripts/gamemode.sh 1",
+        "signal": 1,
+        "interval": "once",
+        "tooltip": true
+    },
     "cpu": {
         "interval": 10,
         "format": "<span color=\"#f38ba8\"></span>  {}%",
         "max-length": 10,
         "on-click": "kitty --class btop-floating -e btop"
     },
-
     "memory": {
         "interval": 30,
         "format": "<span color=\"#89b4fa\"> </span> {used} GiB",
         "on-click": "kitty --class btop-floating -e btop",
         "tooltip-format": "Used: {used} GiB\nFree: {avail} GiB\nTotal: {total} GiB"
     },
-
     "disk": {
         "interval": 30,
         "format": "<span color=\"#f9e2af\"> </span> {specific_used:0.2f} GB",
         //"path": "/",
         "unit": "GB"
     },
-
     "network": {
         "format-wifi": "{essid} ({signalStrength}%) ",
         "format-ethernet": "{ipaddr}/{cidr} 󰈀",
@@ -116,7 +113,6 @@
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
-
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% {icon}",
@@ -142,7 +138,6 @@
             "Easy Effects Sink"
         ]
     },
-
     "hyprland/language": {
         "format": "  {}",
         "format-en": "EN",
@@ -151,7 +146,6 @@
         "keyboard-name": "monsgeek-monsgeek-keyboard-1",
         "on-click": "hyprctl switchxkblayout monsgeek-monsgeek-keyboard-1 next"
     },
-
     "clock": {
         "format": "{:%H:%M} ",
         "format-alt": "{:%A, %b %e}",
@@ -175,7 +169,6 @@
             "on-scroll-down": "shift_down"
         }
     },
-
     "custom/powerbutton": {
         "format": "",
         "on-click": "wlogout --protocol layer-shell",

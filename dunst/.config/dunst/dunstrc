@@ -1,0 +1,53 @@
+[global]
+    monitor = DP-1
+
+    ### Layout ###
+    origin = top-right
+    
+    # NEW SYNTAX: (X, Y) instead of XxY
+    offset = (10, 10)
+    
+    # NEW SYNTAX for Height: (min, max)
+    # Using (0, 110) mimics the old dynamic behavior (grows up to 110px)
+    width = 300
+    height = (0, 110)
+    
+    notification_limit = 5
+    
+    # Aesthetics (Keeping the Waybar theme)
+    corner_radius = 10
+    frame_width = 2
+    frame_color = "#f38ba8"
+    
+    # Font (use the same font as Waybar for consistency)
+    font = JetBrainsMono Nerd Font 10
+    
+    # Spacing
+    padding = 12
+    horizontal_padding = 12
+    separator_height = 2
+    separator_color = "frame"
+
+    # Progress bar (useful for volume/brightness)
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+
+[urgency_low]
+    background = "#1e1e2e"
+    foreground = "#a6adc8"
+    timeout = 5
+
+[urgency_normal]
+    background = "#1e1e2e" 
+    foreground = "#cdd6f4"
+    timeout = 10
+    frame_color = "#89b4fa" 
+
+[urgency_critical]
+    background = "#1e1e2e"
+    foreground = "#f38ba8"
+    frame_color = "#f38ba8"
+    timeout = 0
