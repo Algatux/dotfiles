@@ -34,7 +34,8 @@ dotfiles/
 │       ├── windowrules.conf       # Per-app window rules and behaviors
 │       ├── wallpapers/            # Wallpaper images for swww daemon
 │       └── scripts/
-│           └── gamemode.sh        # Gaming Mode toggle script
+│           ├── gamemode.sh        # Gaming Mode toggle script
+│           └── wallpaper_manager.go  # Automatic wallpaper rotation daemon
 │
 ├── systemd/                       # User-level systemd services
 │   └── .config/systemd/user/
@@ -201,6 +202,12 @@ Hyprland is a tiling compositor for Wayland with advanced animations, multiple w
   - Pauses desktop notifications via `dunstctl`
   - Can be toggled via keybinding or Waybar module
 
+- **`scripts/wallpaper_manager.go`** – Automatic wallpaper rotation daemon that:
+  - Rotates desktop wallpapers at configurable intervals (default: 1 hour)
+  - Supports multiple monitors with independent wallpaper selection
+  - Applies smooth transitions via `swww`
+  - Pauses during Gaming Mode via lock file mechanism
+
 **Customization Tips:**
 
 - Update `monitors.conf` if your display setup differs
@@ -227,6 +234,118 @@ Gaming Mode is a performance profile toggle that optimizes Hyprland for gaming:
 - Script checks Hyprland's `animations:enabled` option to detect current state
 - On enable: runs `hyprctl` commands to disable effects + `powerprofilesctl set performance` + `dunstctl set-paused true`
 - On disable: runs `hyprctl reload` to restore config + `powerprofilesctl set balanced` + `dunstctl set-paused false`
+
+### 🎨 Wallpaper Manager (`wallpaper_manager.go`)
+
+The Wallpaper Manager is an automated wallpaper switching daemon written in Go that rotates desktop backgrounds at configurable intervals. It supports multiple monitors with independent wallpaper selection and smooth transitions.
+
+**What it does:**
+
+- **Automatic rotation:** Changes wallpapers at a configurable interval (default: 1 hour / 3600 seconds)
+- **Multi-monitor support:** Independently manages wallpapers for different displays (main monitor: DP-1, side monitor: DP-3)
+- **Random selection:** Randomly picks wallpapers from designated folders (`main` and `side` directories)
+- **Smooth transitions:** Uses `swww` daemon to apply transitions with configurable FPS and animation steps
+- **Gaming Mode integration:** Automatically pauses wallpaper switching during Gaming Mode via lock file mechanism
+- **Lazy loading:** Scans wallpaper directories once on startup, no continuous disk I/O
+
+**Features:**
+
+| Feature | Details |
+|---------|---------|
+| **Interval Control** | Configure via `-interval` flag (in seconds) |
+| **Monitor Support** | Handles multiple displays with per-monitor configuration |
+| **Image Formats** | Supports `.jpg`, `.png`, `.webp`, `.jpeg` formats |
+| **Transition Effects** | Random transition types with 60 FPS smoothness |
+| **Gaming Mode** | Detects `/tmp/wallpaper_cycle.lock` lock file and pauses switching |
+| **Error Recovery** | Waits for `swww-daemon` to start, retries with 5-second intervals |
+
+**Setup and Configuration:**
+
+The Wallpaper Manager runs as a systemd user service and is configured through the `swww.service` file:
+
+```ini
+[Unit]
+Description=swww Wallpaper Daemon
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/path/to/wallpaper_manager -interval 3600
+Restart=on-failure
+RestartSec=5
+```
+
+**Wallpaper Directory Structure:**
+
+```
+~/.config/hypr/wallpapers/
+├── main/          # Main monitor wallpapers (DP-1)
+│   ├── wallpaper1.jpg
+│   ├── wallpaper2.png
+│   └── ...
+└── side/          # Side monitor wallpapers (DP-3)
+    ├── landscape1.jpg
+    ├── landscape2.webp
+    └── ...
+```
+
+**Customization:**
+
+1. **Change rotation interval:**
+   ```bash
+   # Edit systemd service to change interval (in seconds)
+   # 3600 = 1 hour, 1800 = 30 minutes, etc.
+   systemctl --user edit swww.service
+   ```
+
+2. **Add wallpaper images:**
+   - Place `.jpg`, `.png`, `.webp`, or `.jpeg` files in `~/.config/hypr/wallpapers/main/` and/or `~/.config/hypr/wallpapers/side/`
+   - Manager will automatically discover and include them
+
+3. **Configure monitor outputs:**
+   - Edit `hypr/scripts/wallpaper_manager.go` (lines 43-44) to match your display names:
+   ```go
+   cmdMain := exec.Command("swww", "img", "-o", "DP-1", ...)  // Your main monitor
+   cmdSide := exec.Command("swww", "img", "-o", "DP-3", ...)  // Your side monitor
+   ```
+
+4. **Adjust transition smoothness:**
+   - Modify `--transition-fps` (currently 60 FPS) and `--transition-step` (currently 90) in the source code for different transition effects
+
+**Gaming Mode Integration:**
+
+When Gaming Mode is enabled via `$mainMod + Shift + G`:
+- A lock file `/tmp/wallpaper_cycle.lock` is created
+- The Wallpaper Manager detects this and pauses switching
+- When Gaming Mode is disabled, the lock file is removed and switching resumes
+
+**Manual Execution:**
+
+Build and run the Wallpaper Manager manually:
+
+```bash
+# Navigate to scripts directory
+cd ~/.config/hypr/scripts
+
+# Compile the Go program
+go build -o wallpaper_manager wallpaper_manager.go
+
+# Run with default 1-hour interval
+./wallpaper_manager
+
+# Run with custom interval (e.g., 30 minutes = 1800 seconds)
+./wallpaper_manager -interval 1800
+
+# Kill the process when done
+killall wallpaper_manager
+```
+
+**Troubleshooting:**
+
+- **Wallpapers not changing:** Verify `swww-daemon` is running (`pgrep swww`)
+- **Gaming Mode not pausing:** Confirm lock file mechanism is working or manually restart the daemon
+- **No images found:** Ensure wallpaper directories exist and contain valid image files
+- **Slow transitions:** Reduce `-interval` value or adjust FPS/step values in source code
 
 ### 💻 Kitty Terminal (`kitty/`)
 
