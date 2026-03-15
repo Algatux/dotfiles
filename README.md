@@ -32,16 +32,18 @@ dotfiles/
 │       ├── hypridle.conf          # Idle management (screen off, suspend timeouts)
 │       ├── hyprlock.conf          # Screen lock appearance and behavior
 │       ├── windowrules.conf       # Per-app window rules and behaviors
-│       ├── wallpapers/            # Wallpaper images for swww daemon
+│       ├── wallpapers/            # Wallpaper images for awww daemon
+│       ├── bin/
+│       │   └── wallpaper-manager  # Compiled wallpaper rotation daemon
 │       └── scripts/
 │           ├── gamemode.sh        # Gaming Mode toggle script
-│           └── wallpaper_manager.go  # Automatic wallpaper rotation daemon
+│           └── wallpaper_manager.go  # Wallpaper manager source (built at install)
 │
 ├── systemd/                       # User-level systemd services
 │   └── .config/systemd/user/
 │       ├── hyprpolkitagent.service     # PolicyKit authentication service
 │       ├── ssh-agent.service          # SSH key management daemon
-│       ├── swww.service               # Wallpaper daemon
+│       ├── awww.service               # Wallpaper daemon
 │       ├── waybar.service             # Status bar service
 │       ├── hypridle.service           # Idle management service
 │       ├── default.target.wants/      # Default session startup targets
@@ -105,9 +107,10 @@ bash install.sh
 
 1. **Installs `yay` (AUR helper)** – If not already installed, builds and installs it from source
 2. **Installs all dependencies** – Uses `yay` to install all required packages (see Dependencies section)
-3. **Symlinks configurations** – Uses `stow` to create symlinks for each package (hypr, kitty, waybar, etc.)
-4. **Enables systemd services** – Reloads systemd daemon and enables/starts user services
-5. **Prints status** – Shows progress and errors for each step
+3. **Builds Go executables** – Compiles `wallpaper_manager.go` to `bin/wallpaper-manager` binary
+4. **Symlinks configurations** – Uses `stow` to create symlinks for each package (hypr, kitty, waybar, etc.)
+5. **Enables systemd services** – Reloads systemd daemon and enables/starts user services
+6. **Prints status** – Shows progress and errors for each step
 
 ### Manual Installation
 
@@ -126,7 +129,7 @@ sudo pacman -S hyprland waybar kitty wlogout hyprlock hypridle dunst stow yay gi
 
 # Enable and start services
 systemctl --user daemon-reload
-systemctl --user enable --now waybar.service hypridle.service hyprpolkitagent.service swww.service ssh-agent.service
+systemctl --user enable --now waybar.service hypridle.service hyprpolkitagent.service awww.service ssh-agent.service
 ```
 
 ### Customizing Installation
@@ -175,7 +178,7 @@ Hyprland is a tiling compositor for Wayland with advanced animations, multiple w
 - **`workspaces.conf`** – Workspace settings and per-workspace configurations
 
 - **`autostart.conf`** – Applications/commands to execute on session start:
-  - Daemons: `waybar`, `swww`, `cliphist`
+  - Daemons: `waybar`, `awww`, `cliphist`
   - Environment variables: Wayland/XDG settings
   - Wallpaper loading
 
@@ -194,7 +197,7 @@ Hyprland is a tiling compositor for Wayland with advanced animations, multiple w
   - Floating vs tiling behavior
   - Opacity and animation rules
 
-- **`wallpapers/`** – Directory containing wallpaper images used by `swww`
+- **`wallpapers/`** – Directory containing wallpaper images used by `awww`
 
 - **`scripts/gamemode.sh`** – Gaming Mode toggle script that:
   - Disables animations, shadows, and blur
@@ -205,7 +208,7 @@ Hyprland is a tiling compositor for Wayland with advanced animations, multiple w
 - **`scripts/wallpaper_manager.go`** – Automatic wallpaper rotation daemon that:
   - Rotates desktop wallpapers at configurable intervals (default: 1 hour)
   - Supports multiple monitors with independent wallpaper selection
-  - Applies smooth transitions via `swww`
+  - Applies smooth transitions via `awww`
   - Pauses during Gaming Mode via lock file mechanism
 
 **Customization Tips:**
@@ -244,7 +247,7 @@ The Wallpaper Manager is an automated wallpaper switching daemon written in Go t
 - **Automatic rotation:** Changes wallpapers at a configurable interval (default: 1 hour / 3600 seconds)
 - **Multi-monitor support:** Independently manages wallpapers for different displays (main monitor: DP-1, side monitor: DP-3)
 - **Random selection:** Randomly picks wallpapers from designated folders (`main` and `side` directories)
-- **Smooth transitions:** Uses `swww` daemon to apply transitions with configurable FPS and animation steps
+- **Smooth transitions:** Uses `awww` daemon to apply transitions with configurable FPS and animation steps
 - **Gaming Mode integration:** Automatically pauses wallpaper switching during Gaming Mode via lock file mechanism
 - **Lazy loading:** Scans wallpaper directories once on startup, no continuous disk I/O
 
@@ -257,15 +260,15 @@ The Wallpaper Manager is an automated wallpaper switching daemon written in Go t
 | **Image Formats** | Supports `.jpg`, `.png`, `.webp`, `.jpeg` formats |
 | **Transition Effects** | Random transition types with 60 FPS smoothness |
 | **Gaming Mode** | Detects `/tmp/wallpaper_cycle.lock` lock file and pauses switching |
-| **Error Recovery** | Waits for `swww-daemon` to start, retries with 5-second intervals |
+| **Error Recovery** | Waits for `awww-daemon` to start, retries with 5-second intervals |
 
 **Setup and Configuration:**
 
-The Wallpaper Manager runs as a systemd user service and is configured through the `swww.service` file:
+The Wallpaper Manager runs as a systemd user service and is configured through the `awww.service` file:
 
 ```ini
 [Unit]
-Description=swww Wallpaper Daemon
+Description=awww Wallpaper Daemon
 PartOf=graphical-session.target
 
 [Service]
@@ -295,7 +298,7 @@ RestartSec=5
    ```bash
    # Edit systemd service to change interval (in seconds)
    # 3600 = 1 hour, 1800 = 30 minutes, etc.
-   systemctl --user edit swww.service
+   systemctl --user edit awww.service
    ```
 
 2. **Add wallpaper images:**
@@ -305,8 +308,8 @@ RestartSec=5
 3. **Configure monitor outputs:**
    - Edit `hypr/scripts/wallpaper_manager.go` (lines 43-44) to match your display names:
    ```go
-   cmdMain := exec.Command("swww", "img", "-o", "DP-1", ...)  // Your main monitor
-   cmdSide := exec.Command("swww", "img", "-o", "DP-3", ...)  // Your side monitor
+   cmdMain := exec.Command("awww", "img", "-o", "DP-1", ...)  // Your main monitor
+   cmdSide := exec.Command("awww", "img", "-o", "DP-3", ...)  // Your side monitor
    ```
 
 4. **Adjust transition smoothness:**
@@ -342,7 +345,7 @@ killall wallpaper_manager
 
 **Troubleshooting:**
 
-- **Wallpapers not changing:** Verify `swww-daemon` is running (`pgrep swww`)
+- **Wallpapers not changing:** Verify `awww-daemon` is running (`pgrep awww`)
 - **Gaming Mode not pausing:** Confirm lock file mechanism is working or manually restart the daemon
 - **No images found:** Ensure wallpaper directories exist and contain valid image files
 - **Slow transitions:** Reduce `-interval` value or adjust FPS/step values in source code
@@ -496,9 +499,9 @@ User-level systemd services that manage daemons and utilities for the graphical 
   - Manages SSH keys for authentication
   - Provides SSH_AUTH_SOCK environment variable
 
-- **`swww.service`** – Wallpaper daemon
+- **`awww.service`** – Wallpaper daemon
   - Manages desktop wallpapers
-  - Supports animated wallpapers via swww
+  - Supports animated wallpapers via awww
 
 - **`waybar.service`** – Status bar service
   - Runs the Waybar process
@@ -544,7 +547,8 @@ User-level systemd services that manage daemons and utilities for the graphical 
 | **hypridle** | Idle management daemon with screen timeout | Official Repos |
 | **hyprlock** | Screen lock utility for Hyprland | Official Repos |
 | **hyprshutdown** | Power menu helper for Hyprland sessions | AUR |
-| **swww** | Wallpaper daemon with animation support | AUR |
+| **awww** | Wallpaper daemon with animation support | AUR |
+| **fastfetch** | System information display utility | Official Repos |
 | **ssh-agent** | SSH key management utility | Official Repos |
 | **wl-clipboard** | X11/Wayland clipboard synchronization | Official Repos |
 | **cliphist** | Clipboard history manager | AUR |
@@ -552,6 +556,7 @@ User-level systemd services that manage daemons and utilities for the graphical 
 | **dunst** | Lightweight desktop notification daemon | Official Repos |
 | **noto-fonts-emoji** | Noto emoji font family | Official Repos |
 | **ttf-jetbrains-mono-nerd** | JetBrains Mono Nerd Font (used in terminal/status bar) | AUR |
+| **go** | Go programming language (for building wallpaper-manager) | Official Repos |
 | **stow** | Symlink farm manager (GNU Stow) | Official Repos |
 | **yay** | AUR helper (automatically installed by script) | AUR |
 | **git** | Version control system | Official Repos |

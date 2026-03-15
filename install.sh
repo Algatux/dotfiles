@@ -18,8 +18,9 @@ ALL_SOFTWARE=(
     "cliphist"
     "power-profiles-daemon"
     "go"
+    "awww"
 )
-SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service" "hypridle.service")
+SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "awww.service" "waybar.service" "hypridle.service")
 TARGET_DIR="$HOME"
 
 echo "🚀 Starting dotfiles installation..."

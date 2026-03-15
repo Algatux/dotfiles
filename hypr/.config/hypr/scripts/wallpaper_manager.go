@@ -43,10 +43,10 @@ func changeWallpaper(imgsMain, imgsSide []string) {
 	m := imgsMain[rand.Intn(len(imgsMain))]
 	s := imgsSide[rand.Intn(len(imgsSide))]
 
-	// Apply wallpapers via swww
+	// Apply wallpapers via awww
 	// 60 FPS keeps transitions smooth without spiking GPU usage
-	cmdMain := exec.Command("swww", "img", "-o", "DP-1", m, "--transition-type", "random", "--transition-fps", "60", "--transition-step", "90")
-	cmdSide := exec.Command("swww", "img", "-o", "DP-3", s, "--transition-type", "random", "--transition-fps", "60", "--transition-step", "90", "--resize", "stretch")
+	cmdMain := exec.Command("awww", "img", "-o", "DP-1", m, "--transition-type", "random", "--transition-fps", "60", "--transition-step", "90")
+	cmdSide := exec.Command("awww", "img", "-o", "DP-3", s, "--transition-type", "random", "--transition-fps", "60", "--transition-step", "90", "--resize", "stretch")
 
 	_ = cmdMain.Run()
 	_ = cmdSide.Run()
@@ -65,12 +65,12 @@ func main() {
 	wallMain := filepath.Join(home, ".config/hypr/wallpapers/main")
 	wallSide := filepath.Join(home, ".config/hypr/wallpapers/side")
 
-	for exec.Command("swww", "query").Run() != nil {
-		fmt.Fprintf(os.Stderr, "[%s] Error: Waiting for swww-daemon...\n", time.Now().Format("15:04:05"))
+	for exec.Command("awww", "query").Run() != nil {
+		fmt.Fprintf(os.Stderr, "[%s] Error: Waiting for awww-daemon...\n", time.Now().Format("15:04:05"))
 		time.Sleep(5 * time.Second)
 	}
 
-	fmt.Println("swww-daemon is running! Proceeding...")
+	fmt.Println("awww-daemon is running! Proceeding...")
 
 	// 3. Image scan
 	imgsMain, errM := getImages(wallMain)
