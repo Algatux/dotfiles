@@ -38,14 +38,18 @@ elif [[ "$TOGGLE" -eq 1 ]]; then
         # 2. Set system power profile to Performance
         # Unlocks higher clock speeds and disables aggressive power management
         powerprofilesctl set performance
-        
+
+        # 3. Deactivate wallpaper cycle
+        ~/.config/hypr/scripts/wallpapers_toggle.sh pause 1
+
+        # 4. Send notification
         notify-send -u low -t 990 "Gaming Mode 󰊴" "Enabled: High Performance Profile"
 
         echo "$GAME_MODE_ON"
 
         sleep 1
         
-        # Pause notifications
+        # 5. Pause notifications
         dunstctl set-paused true
     else
         # --- DISABLE GAMING MODE ---
@@ -55,9 +59,13 @@ elif [[ "$TOGGLE" -eq 1 ]]; then
         # 2. Revert to Balanced power profile for better efficiency
         powerprofilesctl set balanced
 
-        # Resume notifications
+        # 3. Resume notifications
         dunstctl set-paused false
 
+        # 4. Activate wallpaper cycle
+        ~/.config/hypr/scripts/wallpapers_toggle.sh active 1
+
+        # 5. Send notification
         notify-send -u low "Gaming Mode 󰊵" "Disabled: Balanced Profile"
 
         echo "$GAME_MODE_OFF"

@@ -17,6 +17,7 @@ ALL_SOFTWARE=(
     "wl-clipboard"
     "cliphist"
     "power-profiles-daemon"
+    "go"
 )
 SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service", "hypridle.service")
 TARGET_DIR="$HOME"
@@ -46,6 +47,12 @@ fi
 
 echo "📥 Installing all required software and fonts via yay..."
 yay -S --needed --noconfirm "${ALL_SOFTWARE[@]}"
+
+# --- Step 0: Building Executables ---
+cd "$DOTFILES_DIR" || exit 1
+HYPR_DIR=./hypr/.config/hypr
+go build -o "${HYPR_DIR}/bin/wallpaper-manager" -ldflags="-s -w" "${HYPR_DIR}/scripts/wallpaper_manager.go"
+
 
 # --- Step 1: Symlinks with Stow ---
 echo "--- Step 1: Linking configurations with Stow ---"
