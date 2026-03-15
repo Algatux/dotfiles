@@ -19,7 +19,7 @@ ALL_SOFTWARE=(
     "power-profiles-daemon"
     "go"
 )
-SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service", "hypridle.service")
+SERVICES=("hyprpolkitagent.service" "ssh-agent.service" "swww.service" "waybar.service" "hypridle.service")
 TARGET_DIR="$HOME"
 
 echo "🚀 Starting dotfiles installation..."
