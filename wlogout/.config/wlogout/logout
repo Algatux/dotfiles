@@ -1,7 +1,0 @@
-#!/bin/sh
-
-pkill -15 -u $USER code
-
-sleep 0.5
-
-command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit
