@@ -35,7 +35,7 @@ func getImages(path string) ([]string, error) {
 func changeWallpaper(imgsMain, imgsSide []string) {
 	// Skip if LockFile exists (Gaming Mode)
 	if _, err := os.Stat(lockFile); err == nil {
-		fmt.Println("Wallpaper swhitch is paused")
+		fmt.Fprintf(os.Stdout, "[%s] Wallpaper switch is paused.\n", time.Now().Format("15:04:05"))
 		return
 	}
 
@@ -77,7 +77,7 @@ func main() {
 	imgsSide, errS := getImages(wallSide)
 
 	if errM != nil || errS != nil || len(imgsMain) == 0 || len(imgsSide) == 0 {
-		fmt.Fprintln(os.Stderr, "Error: No images found in the specified directories.")
+		fmt.Fprintf(os.Stderr, "[%s] Error: No images found in the specified directories.\n", time.Now().Format("15:04:05"))
 		os.Exit(1)
 	}
 
