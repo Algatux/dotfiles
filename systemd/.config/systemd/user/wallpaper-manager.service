@@ -1,0 +1,15 @@
+[Unit]
+Description=Starts wallpaper manager daemon
+# PartOf ensures that if the graphical session dies, swww dies with it
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+ExecStartPre=/usr/bin/bash -c 'until [ -n "$WAYLAND_DISPLAY" ]; do sleep 0.1; done'
+ExecStart=/usr/bin/wallpaper-manager /home/alga/.config/hypr/wallpaper-manager-conf.json
+Restart=on-failure
+RestartSec=5
+
+[Install]
+# Standard target for user-level graphical services
+WantedBy=graphical-session.target

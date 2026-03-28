@@ -50,11 +50,10 @@ fi
 echo "📥 Installing all required software and fonts via yay..."
 yay -S --needed --noconfirm "${ALL_SOFTWARE[@]}"
 
-# --- Step 0: Building Executables ---
-cd "$DOTFILES_DIR" || exit 1
-HYPR_DIR=./hypr/.config/hypr
-go build -o "${HYPR_DIR}/bin/wallpaper-manager" -ldflags="-s -w" "${HYPR_DIR}/scripts/wallpaper_manager.go"
-
+# --- Step 0: Installing dependencies ---
+curl -s https://api.github.com/repos/Algatux/wallpaper-manager/releases/latest | grep "browser_download_url" | head -n 1 | grep -oP 'https\S+[^\"]' | xargs curl -LO
+mv wallpaper-manager-linux-amd64 /usr/bin/wallpaper-manager
+chmod +x /usr/bin/wallpaper-manager
 
 # --- Step 1: Symlinks with Stow ---
 echo "--- Step 1: Linking configurations with Stow ---"
